@@ -1,0 +1,220 @@
+════════════════════════════════════════════════════════════
+QUESTION #1    Question 1 of 375
+════════════════════════════════════════════════════════════
+
+Question:
+You are building an ML model to detect anomalies in real-time sensor data. You will use Pub/Sub to handle incoming requests. You want to store the results for analytics and visualization. How should you configure the pipeline?
+
+Options:
+  A. Use batch prediction mode instead of online mode.
+  B. Send the request again with a smaller batch of instances.
+  C. Use base64 to encode your data before using it for prediction.
+  D. Apply for a quota increase for the number of prediction requests.
+
+Correct Answer:
+  A
+
+Explanation:
+  To handle real-time streaming data and apply machine learning models for anomaly detection, the ideal configuration involves using Dataflow for data processing. Dataflow is a fully managed service for executing Apache Beam pipelines that handle stream and batch data processing. Using AI Platform allows for deploying and managing machine learning models. BigQuery is a powerful analytics data warehouse that can store the results for further analysis and visualization. Therefore, the correct configuration is 1 = Dataflow, 2 = AI Platform, 3 = BigQuery.
+
+Community Votes:
+  A → 100%
+
+Most Accepted Answer:
+  A. Use batch prediction mode instead of online mode.
+
+Discussion:
+  1. esuaaaa (24 upvotes): Definitely A. Dataflow is must.
+  2. inder0007 (13 upvotes): Even if I follow the link, it should be dataflow, AI-Platform and Bigquery. Real answer shoul...
+  3. ashii007 (6 upvotes): B. 1 = DataProc, 2 = AutoML, 3 = Cloud Bigtable - wrong because bigtable is not for analytics a...
+  4. mousseUwU (3 upvotes): A (Correct) doc: https://cloud.google.com/architecture/building-anomaly-detection-dataflow-big...
+  5. ki_123 (2 upvotes): BigQuery for the analytics and visualization.
+  6. nktyagi (2 upvotes): To preprocess data you will use Dataflow, and then you can use the Vertex AI platform for traini...
+  7. deepakno (2 upvotes): This use case similar to anomaly detection also points to A only. https://cloud.google.com/blog...
+  8. Mohamed_Mossad (2 upvotes): by options eliminations , answer will between A,D in D you cant save streaming data from ...
+  9.   ↳ Rastri: I think you can in some situations: https://cloud.google.com/pubsub/docs/bigquery
+  10. MisterHairy (2 upvotes): =New Question1= During batch training of a neural network, you notice that there is an oscil...
+  11.   ↳ MisterHairy: Answer?
+  12.   ↳ NickHapton: oscillation because the learning rate is too large. Therefore: D
+  13.   ↳ wences: Should be C increasing will make it fail more, batch increase/decrease will not make loss function to perform better, https://developers.google.com/machine-learning/crash-course/introduction-to-neural-networks/playground-exercises
+  14.   ↳ lukacs16: I agree with D. The oscillation indicates the learning rate is too big and it's missing the target so it bounces back and forth.
+  15.   ↳ szl0144: answer is d
+
+URL: https://examice.com/exams/google/professional-machine-learning-engineer
+
+════════════════════════════════════════════════════════════
+QUESTION #2    Question 2 of 375
+════════════════════════════════════════════════════════════
+
+Question:
+You are an ML engineer at a global shoe store. You manage the ML models for the company's website. You are asked to build a model that will recommend new products to the user based on their purchase behavior and similarity with other users. What should you do?
+
+Options:
+  A. Build a classification model
+  B. Build a knowledge-based filtering model
+  C. Build a collaborative-based filtering model
+  D. Build a regression model using the features as predictors
+
+Correct Answer:
+  C
+
+Explanation:
+  To recommend new products to users based on their purchase behavior and similarity with other users, the best approach is to build a collaborative filtering model. Collaborative filtering leverages user behavior data to find similarities between users and recommend items that similar users have liked or purchased. This method is well-suited for situations where you want to personalize recommendations based on user interactions and preferences. Classification and regression models are more common in other types of predictive modeling tasks, and knowledge-based filtering relies on explicit knowledge rather than user interaction patterns, making them less appropriate for this use case.
+
+Community Votes:
+  C → 100%
+
+Most Accepted Answer:
+  C. Build a collaborative-based filtering model
+
+Discussion:
+  1. maartenalexander (23 upvotes): C. Collaborative filtering is about user similarity and product recommendations. Other...
+  2. mousseUwU (4 upvotes): C - https://cloud.google.com/architecture/recommendations-using-machine-learning-on-compute-en...
+  3. coupet (2 upvotes): Collaborative filtering models, a core technique in recommender systems, predict user preferences...
+  4. DaleR (2 upvotes): C. Collaborative filtering is a foundational model for building a recommendation system as the inp...
+  5. Sum_Sum (2 upvotes): Chat gPT: Collaborative filtering models are specifically designed for recommendation systems. T...
+  6. M25 (2 upvotes): Went with C
+  7. giaZ (2 upvotes): Definitely C
+  8. caohieu04 (2 upvotes): Community vote
+  9. xiaoF (2 upvotes): should be C
+  10. PhilipKoku (1 upvotes): C) Collaborative filtering model
+  11. 10SR (1 upvotes): C. Collaborative filtering is apt amongst the answers
+  12. wish0035 (1 upvotes): ans: C
+  13. hiromi (1 upvotes): C https://cloud.google.com/blog/topics/developers-practitioners/looking-build-recommendation-syst...
+  14. EFIGO (1 upvotes): This is a textbook application of collaborative filtering, C is the correct answer
+  15. GCP72 (1 upvotes): Correct answer is "C"
+
+URL: https://examice.com/exams/google/professional-machine-learning-engineer
+
+════════════════════════════════════════════════════════════
+QUESTION #3    Question 3 of 375
+════════════════════════════════════════════════════════════
+
+Question:
+Your team trained and tested a DNN regression model with good results. Six months after deployment, the model is performing poorly due to a change in the distribution of the input data. How should you address the input differences in production?
+
+Options:
+  A. Create alerts to monitor for skew, and retrain the model.
+  B. Perform feature selection on the model, and retrain the model with fewer features.
+  C. Retrain the model, and select an L2 regularization parameter with a hyperparameter tuning service.
+  D. Perform feature selection on the model, and retrain the model on a monthly basis with fewer features.
+
+Correct Answer:
+  A
+
+Explanation:
+  When a deployed model starts performing poorly due to a change in the distribution of the input data, the appropriate step is to create alerts to monitor for data skew and retrain the model. This approach ensures that the model adapts to new patterns in the data, maintaining its accuracy and effectiveness. Feature selection or hyperparameter tuning, as mentioned in other options, are not directly addressing the root issue, which is the change in data distribution. Continuous monitoring and timely retraining are essential for handling such changes effectively.
+
+Community Votes:
+  A → 100%
+
+Most Accepted Answer:
+  A. Create alerts to monitor for skew, and retrain the model.
+
+Discussion:
+  1. celia20200410 (36 upvotes): A Data values skews: These skews are significant changes in the statistical properties of...
+  2.   ↳ mousseUwU: I agree, A is correct
+  3.   ↳ oliveolil: Rule #37: The difference between the performance on the holdout data and the "next­day" data. Again, this will always exist. You should tune your regularization to maximize the next-day performance. However, large drops in performance between holdout and next-day data may indicate that some features are time-sensitive and possibly degrading model performance. Maybe it should be C
+  4. Paul_Dirac (5 upvotes): A Data drift doesn't necessarily require feature reselection (e.g. by L2 regularization). htt...
+  5. Removed (4 upvotes): C. "A problem is said to be ill-posed if small changes in the given information cause large chan...
+  6.   ↳ Y2Data: The model itself is fine, neither overfitting nor performing poorly suddenly, it's a gradual change so regularization on the original model would not help. C is incorrect.
+  7.   ↳ sonxxx: right. It is a general problem in the model so we need find a general solution for the model. A answer increase instability and the model cost.
+  8. tavva_prudhvi (2 upvotes): When the distribution of input data changes, the model may not perform as well as it did d...
+  9. M25 (2 upvotes): Went with A
+  10. tavva_prudhvi (2 upvotes): Its A, as the model itself is performing well, neither overfitting nor performing poorly s...
+  11. hiromi (2 upvotes): A You don't need to do feature selection again
+  12. Danny2021 (2 upvotes): A. It is well documented in Google model monitoring docs.
+  13. gcp2021go (2 upvotes): should be C. as L2 regularization prevent overfitting - can potential maintain model performan...
+  14. inder0007 (2 upvotes): A model learns the distribution of the data, if it has done its job well any change in the dis...
+  15. b7ad1d9 (1 upvotes): A : It is the simplest answer. The others seem to be trying to solve feature selection again but...
+
+URL: https://examice.com/exams/google/professional-machine-learning-engineer
+
+════════════════════════════════════════════════════════════
+QUESTION #4    Question 4 of 375
+════════════════════════════════════════════════════════════
+
+Question:
+You are working on a Neural Network-based project. The dataset provided to you has columns with different ranges. While preparing the data for model training, you discover that gradient optimization is having difficulty moving weights to a good solution. What should you do?
+
+Options:
+  A. Use feature construction to combine the strongest features.
+  B. Use the representation transformation (normalization) technique.
+  C. Improve the data cleaning step by removing features with missing values.
+  D. Change the partitioning step to reduce the dimension of the test set and have a larger training set.
+
+Correct Answer:
+  B
+
+Explanation:
+  When working with a neural network and encountering difficulties in gradient optimization, especially in the presence of features with different ranges, the appropriate step is to normalize the data. Normalization scales the dataset's numeric fields to a common range, typically between 0 and 1. This process ensures that features contribute equally to the gradient descent optimization, facilitating better and faster convergence towards an optimal solution. Therefore, using the representation transformation (normalization) technique is the appropriate approach in this scenario.
+
+Community Votes:
+  B → 95%
+  C → 5%
+
+Most Accepted Answer:
+  B. Use the representation transformation (normalization) technique.
+
+Discussion:
+  1. kurasaki (27 upvotes): Vote for B. We could impute instead of remove the column to avoid loss of information
+  2. pddddd (12 upvotes): I also think it is B: "The presence of feature value X in the formula will affect the step size ...
+  3. ggorzki (4 upvotes): normalization https://developers.google.com/machine-learning/data-prep/transform/transform-numeric
+  4. MK_Ahsan (4 upvotes): B. The problem does not mention anything about missing values. It needs to normalize the featur...
+  5. PhilipKoku (3 upvotes): B) Option B (Use the representation transformation technique) is the most relevant choice. No...
+  6. fragkris (3 upvotes): B - The key phrase is "different ranges", therefore we need to normalize the values.
+  7. kaike_reis (3 upvotes): (B) - NN models needs features with close ranges - SGD converges well using features in [0, 1...
+  8. ralf_cc (3 upvotes): B - remove the outliers?
+  9.   ↳ omar_bh: Normalization is more complicated than that. Normalization changes the values of dataset's numeric fields to be in a common scale, without impacting differences in the ranges of values. Normalization is required only when features have different ranges.
+  10. MultiCloudIronMan (2 upvotes): Because the range needs to normalize
+  11. ares81 (2 upvotes): Normalization is the word.
+  12. Y2Data (2 upvotes): When gradient descent fails, it's out of the lacking of a powerful feature. Using normalization w...
+  13. jsalvasoler (1 upvotes): clearly B
+  14. M25 (1 upvotes): Went with B
+  15. SergioRubiano (1 upvotes): Normalization
+
+URL: https://examice.com/exams/google/professional-machine-learning-engineer
+
+════════════════════════════════════════════════════════════
+QUESTION #5    Question 5 of 375
+════════════════════════════════════════════════════════════
+
+Question:
+You have deployed a model on Vertex AI for real-time inference. During an online prediction request, you get an “Out of Memory” error. What should you do?
+
+Options:
+  A. Use batch prediction mode instead of online mode.
+  B. Send the request again with a smaller batch of instances.
+  C. Use base64 to encode your data before using it for prediction.
+  D. Apply for a quota increase for the number of prediction requests.
+
+Correct Answer:
+  B
+
+Explanation:
+  During an 'Out of Memory' error in an online prediction request, the error suggests that the data being sent in each request is too large and exceeds the available memory. To address this, sending the request again with a smaller batch of instances can reduce the amount of data processed at a time, potentially avoiding the out-of-memory error and successfully completing the prediction request.
+
+Community Votes:
+  B → 97%
+  C → 3%
+
+Most Accepted Answer:
+  B. Send the request again with a smaller batch of instances.
+
+Discussion:
+  1. hiromi (25 upvotes): B is the answer 429 - Out of Memory https://cloud.google.com/ai-platform/training/docs/troublesh...
+  2.   ↳ tavva_prudhvi: Upvote this comment, its the right answer!
+  3. tavva_prudhvi (2 upvotes): B. Send the request again with a smaller batch of instances. If you are getting an "Out of...
+  4. koakande (2 upvotes): https://cloud.google.com/ai-platform/training/docs/troubleshooting
+  5. PhilipKoku (1 upvotes): B) Use smaller set of tokens
+  6. pmle_nintendo (1 upvotes): By reducing the batch size of instances sent for prediction, you decrease the memory footp...
+  7. M25 (1 upvotes): Went with B
+  8. BenMS (1 upvotes): This question is about prediction not training - and specifically it's about _online_ prediction (...
+  9.   ↳ BenMS: Okay, option D is also about online serving, but the error message indicates a problem for individual predictions, which will not be fixed by increasing the number of predictions per second.
+  10.   ↳ OpenKnowledge: Base64 encoding does not reduce the size of data; it actually increases it. Base64 encoding wouldn't help to address memory error
+  11. ares81 (1 upvotes): The correct answer is B.
+  12. LearnSodas (1 upvotes): answer B as reported here: https://cloud.google.com/ai-platform/training/docs/troubleshooting
+  13. Sivaram06 (1 upvotes): https://cloud.google.com/ai-platform/training/docs/troubleshooting#http_status_codes
+
+URL: https://examice.com/exams/google/professional-machine-learning-engineer
+
