@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <!-- TODO(security): When serving over HTTP/HTTPS, configure server headers: Content-Security-Policy (with script/style hashes or nonces), X-Frame-Options: DENY, and Permissions-Policy: camera=(), microphone=(), geolocation=(). Inline styles and scripts are retained here so this study guide works offline as a standalone file:// document. -->
+  <title>PMLE — 10 Most Reliable Exam Patterns &amp; Red Flags</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --surface-hover: #e2e8f0;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-soft: #64748b;
+      --blue: #1a73e8;
+      --blue-bg: #eff6ff;
+      --blue-border: #bfdbfe;
+      --blue-text: #1e40af;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --green-text: #166534;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+      --amber-text: #92400e;
+      --red: #e11d48;
+      --red-bg: #fff1f2;
+      --red-border: #fecdd3;
+      --red-text: #9f1239;
+      --indigo: #4f46e5;
+      --indigo-bg: #eef2ff;
+      --indigo-border: #c7d2fe;
+      --indigo-text: #3730a3;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+      --purple-border: #ddd6fe;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07);
+      --radius: 14px;
+      --radius-sm: 8px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", "Fira Code", ui-monospace, Menlo, Monaco, Consolas, monospace;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-alt: #1e293b;
+      --surface-hover: #334155;
+      --border: #1f2937;
+      --border-strong: #374151;
+      --text: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-soft: #94a3b8;
+      --blue: #60a5fa;
+      --blue-bg: rgba(37, 99, 235, 0.16);
+      --blue-border: rgba(96, 165, 250, 0.35);
+      --blue-text: #93c5fd;
+      --green: #34d399;
+      --green-bg: rgba(16, 185, 129, 0.14);
+      --green-border: rgba(52, 211, 153, 0.35);
+      --green-text: #6ee7b7;
+      --amber: #fbbf24;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --amber-border: rgba(251, 191, 36, 0.35);
+      --amber-text: #fde68a;
+      --red: #fb7185;
+      --red-bg: rgba(225, 29, 72, 0.15);
+      --red-border: rgba(251, 113, 133, 0.35);
+      --red-text: #fda4af;
+      --indigo: #818cf8;
+      --indigo-bg: rgba(79, 70, 229, 0.18);
+      --indigo-border: rgba(129, 140, 248, 0.35);
+      --indigo-text: #c7d2fe;
+      --purple: #a78bfa;
+      --purple-bg: rgba(124, 58, 237, 0.16);
+      --purple-border: rgba(167, 139, 250, 0.35);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 15px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top Suite Navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .topbar-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .brand-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+      flex-shrink: 0;
+    }
+    .suite-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .nav-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .nav-pill:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+      text-decoration: none;
+    }
+    .nav-pill.active {
+      background: var(--blue-bg);
+      color: var(--blue-text);
+      border-color: var(--blue-border);
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-input {
+      width: 220px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--blue);
+      background: var(--surface);
+    }
+    .icon-btn {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .icon-btn:hover { background: var(--surface-hover); }
+
+    /* Hero Banner */
+    .hero {
+      max-width: 1380px;
+      margin: 22px auto 0;
+      padding: 0 20px;
+    }
+    .hero-card {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 48%, #312e81 100%);
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(255, 255, 255, 0.16);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .hero p {
+      color: rgba(255, 255, 255, 0.86);
+      max-width: 780px;
+      font-size: 15px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px;
+    }
+    .kpi-box {
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+    .kpi-val {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+    .kpi-lbl {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 2px;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      max-width: 1380px;
+      margin: 16px auto 0;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-chip {
+      padding: 6px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-chip:hover { border-color: var(--blue); color: var(--text); }
+    .filter-chip.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #ffffff;
+    }
+    .filter-status {
+      font-size: 12.5px;
+      color: var(--text-soft);
+      margin-left: auto;
+    }
+
+    /* Main Layout */
+    .layout {
+      max-width: 1380px;
+      margin: 18px auto 60px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc-sidebar { position: static !important; }
+    }
+
+    /* Sticky TOC Sidebar */
+    .toc-sidebar {
+      position: sticky;
+      top: 74px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .toc-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 9px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .toc-link:hover {
+      background: var(--surface-alt);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .toc-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: var(--blue-bg);
+      color: var(--blue-text);
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .toc-num.red {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    /* Pattern Cards */
+    .content-col {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .pattern-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      scroll-margin-top: 82px;
+    }
+    .pattern-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .pattern-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pattern-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--blue);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .pattern-header h2 {
+      font-size: 18.5px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .pattern-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .tag-blue { background: var(--blue-bg); color: var(--blue-text); border-color: var(--blue-border); }
+    .tag-green { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
+    .tag-amber { background: var(--amber-bg); color: var(--amber-text); border-color: var(--amber-border); }
+    .tag-red { background: var(--red-bg); color: var(--red-text); border-color: var(--red-border); }
+    .tag-indigo { background: var(--indigo-bg); color: var(--indigo-text); border-color: var(--indigo-border); }
+
+    .pattern-body {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .trigger-callout {
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: var(--amber-bg);
+      border-left: 4px solid var(--amber);
+      color: var(--text);
+      font-size: 14px;
+    }
+    .trigger-callout strong { color: var(--amber-text); }
+
+    /* Visual Containers */
+    .visual-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      overflow-x: auto;
+    }
+    .visual-caption {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Visual Ladder (Pattern 1) */
+    .ladder-steps {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    .ladder-step {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-top: 4px solid var(--blue);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+    .ladder-step.s0 { border-top-color: #64748b; }
+    .ladder-step.s1 { border-top-color: #16a34a; }
+    .ladder-step.s2 { border-top-color: #0284c7; }
+    .ladder-step.s3 { border-top-color: #4f46e5; }
+    .ladder-step.s4 { border-top-color: #9333ea; }
+    .step-num {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+    .step-win {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.25;
+    }
+    .step-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .effort-meter {
+      margin-top: auto;
+      padding-top: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-soft);
+    }
+
+    /* Visual Cards Grid */
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+    .cards-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .mini-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mini-card.win { border-left: 4px solid var(--green); }
+    .mini-card.warn { border-left: 4px solid var(--amber); }
+    .mini-card.bad { border-left: 4px solid var(--red); background: var(--red-bg); }
+    .mini-card.info { border-left: 4px solid var(--indigo); }
+    .mini-card h4 {
+      font-size: 14.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .mini-card p { font-size: 13.5px; color: var(--text-muted); }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.8px;
+    }
+    th {
+      background: var(--surface-alt);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border-strong);
+    }
+    td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--surface-alt); }
+
+    /* Badges & Code */
+    code {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--indigo-text);
+    }
+    .q-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      margin: 1px 2px;
+      border-radius: 6px;
+      background: var(--indigo-bg);
+      color: var(--indigo-text);
+      border: 1px solid var(--indigo-border);
+      white-space: nowrap;
+    }
+    .win-pill {
+      display: inline-block;
+      font-weight: 700;
+      color: var(--green-text);
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12.5px;
+    }
+    .no-pill {
+      display: inline-block;
+      font-weight: 700;
+      color: var(--red-text);
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12.5px;
+    }
+
+    /* SVG Diagram Styling */
+    .diagram-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .empty-state {
+      padding: 36px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+    }
+
+    @media print {
+      .topbar, .filter-bar, .toc-sidebar { display: none !important; }
+      .layout { grid-template-columns: 1fr; margin: 0; }
+      .pattern-card { break-inside: avoid; box-shadow: none; margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Suite -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span>Google Cloud PMLE Study Suite</span>
+      </div>
+      <nav class="suite-nav" aria-label="Study Guides">
+        <a class="nav-pill active" href="PMLE_Reliable_Patterns.html">1. 10 Reliable Patterns</a>
+        <a class="nav-pill" href="PMLE_Patterns_and_Core_Concepts_Guide.html">2. Core Concepts &amp; Flowcharts</a>
+        <a class="nav-pill" href="PMLE_Rapid_Revision_Cheat_Sheet.html">3. 2-Day Sprint Cheat Sheet</a>
+        <a class="nav-pill" href="PMLE_Q200_to_375_Rapid_Revision.html">4. Q#200–375 Elimination Matrix</a>
+        <a class="nav-pill" href="index.html">Practice App (375 Qs)</a>
+      </nav>
+      <div class="topbar-actions">
+        <div class="search-wrap">
+          <input id="searchInput" class="search-input" type="search" placeholder="Filter patterns or Q# (press /)" aria-label="Search patterns">
+        </div>
+        <button id="themeBtn" class="icon-btn" type="button" title="Toggle Dark/Light Mode">Dark Mode</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Summary -->
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-top">
+        <div>
+          <span class="hero-eyebrow">Grounded Notebook Verified • June 2026 Exam Guide &amp; 375 Audited Questions</span>
+          <h1>The 10 Most Reliable PMLE Exam Patterns</h1>
+          <p>Authoritative decision rules, visual architecture blueprints, and 8 official GCP platform-limit red flags verified against the June 2026 Exam Guide, PMLE Study Guide v2.0, ML Crash Course, and Google Cloud AI/ML Docs.</p>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-box">
+          <div class="kpi-val">100% Win Rate</div>
+          <div class="kpi-lbl">Model Armor for inline LLM prompt &amp; response safety (Q#371, Q#375)</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">42 Grounded Fixes</div>
+          <div class="kpi-lbl">Official GCP quotas &amp; Rules of ML overrides integrated (23 NB &ne; Gemini)</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">75% Win Rate</div>
+          <div class="kpi-lbl">Sampled Shapley for tabular / XGBoost Explainable AI (Q#75–Q#275)</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">Zero-Skew + Fast I/O</div>
+          <div class="kpi-lbl">TFX tf.Transform &rarr; GCS TFRecords + interleave + prefetch (Q#132, Q#263)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Category Filter -->
+  <div class="filter-bar" role="region" aria-label="Category Filters">
+    <button class="filter-chip active" data-filter="all" type="button">All Sections (11)</button>
+    <button class="filter-chip" data-filter="arch" type="button">Architecture &amp; Serving</button>
+    <button class="filter-chip" data-filter="data" type="button">Data, PII &amp; Training</button>
+    <button class="filter-chip" data-filter="monitor" type="button">Monitoring &amp; XAI</button>
+    <button class="filter-chip" data-filter="genai" type="button">GenAI &amp; Agent Platform</button>
+    <button class="filter-chip" data-filter="redflags" type="button">8 Hard Red Flags</button>
+    <span id="filterStatus" class="filter-status">Showing all 11 sections</span>
+  </div>
+
+  <!-- Main 2-Column Content -->
+  <div class="layout">
+
+    <!-- Sticky Table of Contents -->
+    <aside class="toc-sidebar" aria-label="Table of Contents">
+      <div class="toc-title">Quick Jump</div>
+      <ul class="toc-list">
+        <li><a class="toc-link" href="#pattern-1"><span class="toc-num">1</span>The "Laziness Ladder"</a></li>
+        <li><a class="toc-link" href="#pattern-2"><span class="toc-num">2</span>The Latency Split</a></li>
+        <li><a class="toc-link" href="#pattern-3"><span class="toc-num">3</span>Explainable AI Selector</a></li>
+        <li><a class="toc-link" href="#pattern-4"><span class="toc-num">4</span>Slow GPU/TPU Infeed</a></li>
+        <li><a class="toc-link" href="#pattern-5"><span class="toc-num">5</span>PII, Bucketing &amp; Fairness</a></li>
+        <li><a class="toc-link" href="#pattern-6"><span class="toc-num">6</span>Skew vs. Drift Switch</a></li>
+        <li><a class="toc-link" href="#pattern-7"><span class="toc-num">7</span>Preprocessing Skew Fix</a></li>
+        <li><a class="toc-link" href="#pattern-8"><span class="toc-num">8</span>Data &amp; Target Leakage</a></li>
+        <li><a class="toc-link" href="#pattern-9"><span class="toc-num">9</span>Imbalance &amp; Recall Audit</a></li>
+        <li><a class="toc-link" href="#pattern-10"><span class="toc-num">10</span>GenAI &amp; Agent Platform</a></li>
+        <li><a class="toc-link" href="#red-flags"><span class="toc-num red">!</span>8 Hard Platform Red Flags</a></li>
+      </ul>
+    </aside>
+
+    <!-- Cards Column -->
+    <main class="content-col" id="cardsContainer">
+
+      <!-- PATTERN 1 -->
+      <article class="pattern-card" id="pattern-1" data-cat="arch">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">1</span>
+            <h2>The "Laziness Ladder" (Always Pick the Lowest-Effort Valid Tool)</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-blue">Architecture</span>
+            <span class="tag tag-green">Rules of ML #1</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="trigger-callout">
+            <strong>Exam Trigger Keywords:</strong> Whenever a prompt mentions <em>"minimal coding," "fastest time to market," "small team,"</em> or <em>"minimal operational overhead,"</em> walk down this ladder from <strong>Step 0 to Step 4</strong> and <strong>STOP at the first level</strong> that satisfies the data &amp; platform constraints (watch the <strong><code>&ge; 1,000</code>-row AutoML minimum</strong> in <code>Q#207</code>!).
+          </div>
+
+          <div class="visual-box">
+            <div class="visual-caption">
+              <span>Visual Progression — Lowest Effort (Left) to Maximum Custom Control (Right)</span>
+              <span>Stop at First Valid Match!</span>
+            </div>
+            <div class="ladder-steps">
+              <div class="ladder-step s0">
+                <span class="step-num">Step 0 • Zero ML</span>
+                <div class="step-win">No ML! Live Heuristic or Optimization</div>
+                <div class="step-desc">Exact inputs known OR 0 historical labels (never train on fake heuristic labels!).</div>
+                <div class="effort-meter">Effort: ★☆☆☆☆</div>
+              </div>
+              <div class="ladder-step s1">
+                <span class="step-num">Step 1 • API Call</span>
+                <div class="step-win">Pre-Trained Cloud APIs</div>
+                <div class="step-desc">Vision, Document AI, Speech, Natural Language, Translation.</div>
+                <div class="effort-meter">Effort: ★★☆☆☆</div>
+              </div>
+              <div class="ladder-step s2">
+                <span class="step-num">Step 2 • SQL Only</span>
+                <div class="step-win">BigQuery ML (BQML)</div>
+                <div class="step-desc">Tabular data in BigQuery, SQL team, OR &lt;1,000 rows (365 rows works!).</div>
+                <div class="effort-meter">Effort: ★★★☆☆</div>
+              </div>
+              <div class="ladder-step s3">
+                <span class="step-num">Step 3 • No-Code Custom</span>
+                <div class="step-win">Vertex AI AutoML</div>
+                <div class="step-desc">Custom labeled data (&ge;1,000 tabular rows!) + high accuracy without code.</div>
+                <div class="effort-meter">Effort: ★★★★☆</div>
+              </div>
+              <div class="ladder-step s4">
+                <span class="step-num">Step 4 • Full Code</span>
+                <div class="step-win">Vertex AI Custom Training</div>
+                <div class="step-desc">Custom architecture/loss + tf.distribute.Strategy across GPUs/TPUs.</div>
+                <div class="effort-meter">Effort: ★★★★★</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Step</th>
+                  <th>Question Trigger Keyword</th>
+                  <th>Winning Grounded Answer</th>
+                  <th style="width: 205px;">Verified Bank Q#s</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>0</strong></td>
+                  <td>Deterministic data (exact reservations known) OR <strong>zero historical failure labels exist</strong></td>
+                  <td><span class="win-pill">No ML!</span> Classical optimization (VRP) or <strong>deploy &amp; evaluate a live heuristic first</strong> while collecting real incident labels (<em>Rules of ML</em> Rule #1 — never train supervised ML on synthetic z-score labels!)</td>
+                  <td><span class="q-pill">Q#2</span> <span class="q-pill">Q#94 (C)</span> <span class="q-pill">Q#121</span> <span class="q-pill">Q#139 (B)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>1</strong></td>
+                  <td>Standard vision, OCR, forms, speech, sentiment, translation (<strong>no custom domain training</strong>)</td>
+                  <td><span class="win-pill">Pre-trained API</span> (Cloud Vision, Document AI, Natural Language, Speech-to-Text)</td>
+                  <td><span class="q-pill">Q#12</span> <span class="q-pill">Q#239</span> <span class="q-pill">Q#286 (B)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>2</strong></td>
+                  <td>Data in <strong>BigQuery</strong> + SQL team / fast baseline, OR <strong>tabular dataset &lt; 1,000 rows</strong> (e.g., 365 daily rows)</td>
+                  <td><span class="win-pill">BigQuery ML (BQML)</span> (AutoML strictly rejects &lt; 1,000 rows!)</td>
+                  <td><span class="q-pill">Q#4</span> <span class="q-pill">Q#63</span> <span class="q-pill">Q#207 (A)</span> <span class="q-pill">Q#289</span> <span class="q-pill">Q#352</span></td>
+                </tr>
+                <tr>
+                  <td><strong>3</strong></td>
+                  <td>Custom labeled data (<strong>&ge; 1,000 rows</strong> for tabular) + wants high accuracy <strong>without writing model code</strong></td>
+                  <td><span class="win-pill">Vertex AI AutoML</span> (or Document AI Custom Extractor for custom forms)</td>
+                  <td><span class="q-pill">Q#67</span> <span class="q-pill">Q#200 (A)</span> <span class="q-pill">Q#265</span> <span class="q-pill">Q#354</span></td>
+                </tr>
+                <tr>
+                  <td><strong>4</strong></td>
+                  <td>Custom neural architecture, custom loss function, or multi-GPU / Cloud TPU distribution</td>
+                  <td><span class="win-pill">Vertex AI Custom Training</span> + <code>tf.distribute.Strategy</code> / <code>a2-megagpu-16g</code> / <code>24 vCPUs + 1 V100</code></td>
+                  <td><span class="q-pill">Q#96 (D)</span> <span class="q-pill">Q#116 (B)</span> <span class="q-pill">Q#198 (D)</span> <span class="q-pill">Q#338 (C)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 2 -->
+      <article class="pattern-card" id="pattern-2" data-cat="arch">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">2</span>
+            <h2>The Latency Split: "Streaming/Edge (&lt;50ms)" vs. "Private Online (&lt;100ms)" vs. "Batch"</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-blue">Serving &amp; Scaling</span>
+            <span class="tag tag-amber">High Exam Weight</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="visual-box">
+            <div class="visual-caption">
+              <span>Latency Spectrum &amp; Grounded Serving Blueprint</span>
+              <span>Match Speed, Network &amp; Traffic Cadence</span>
+            </div>
+            <svg class="diagram-svg" viewBox="0 0 920 196" role="img" aria-label="Latency Split Spectrum Diagram">
+              <!-- Tier 1: Streaming / Edge -->
+              <rect x="10" y="14" width="286" height="168" rx="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+              <rect x="24" y="26" width="160" height="24" rx="12" fill="#16a34a"/>
+              <text x="104" y="42" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700">&lt; 1–50 ms • In-Process / Edge</text>
+              <text x="24" y="72" fill="#0f172a" font-size="14.5" font-weight="800">Stream In-Memory vs. Edge</text>
+              <text x="24" y="95" fill="#334155" font-size="12">• Dataflow: beam.RunInference (Q#138=B)</text>
+              <text x="24" y="115" fill="#334155" font-size="12">• Mobile/Offline: TFLite / Edge TPU</text>
+              <text x="24" y="135" fill="#334155" font-size="12">• Zero external REST hop latency</text>
+              <text x="24" y="162" fill="#166534" font-size="11.5" font-weight="700">✓ SavedModel in Beam or TFLite on Edge</text>
+
+              <!-- Tier 2: Real-Time Online -->
+              <rect x="316" y="14" width="292" height="168" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+              <rect x="330" y="26" width="175" height="24" rx="12" fill="#1d4ed8"/>
+              <text x="417" y="42" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700">&lt; 100 ms • Online Private</text>
+              <text x="330" y="72" fill="#0f172a" font-size="14.5" font-weight="800">Online Lookup + Private PSC</text>
+              <text x="330" y="95" fill="#334155" font-size="12">• Feature Store (Online) / Bigtable</text>
+              <text x="330" y="115" fill="#334155" font-size="12">• Private Endpoint = Optimized (Q#277=C)</text>
+              <text x="330" y="135" fill="#334155" font-size="12">• Low-QPS canary: 1 manual node (Q#164=B)</text>
+              <text x="330" y="162" fill="#be123c" font-size="11.5" font-weight="700">✗ NEVER query BigQuery inline!</text>
+
+              <!-- Tier 3: Scheduled Batch -->
+              <rect x="628" y="14" width="282" height="168" rx="12" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+              <rect x="642" y="26" width="170" height="24" rx="12" fill="#6d28d9"/>
+              <text x="727" y="42" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700">Daily / Weekly / Monthly</text>
+              <text x="642" y="72" fill="#0f172a" font-size="14.5" font-weight="800">Scheduled Batch Pipeline</text>
+              <text x="642" y="95" fill="#334155" font-size="12">• BQML / Vertex Batch Prediction</text>
+              <text x="642" y="115" fill="#334155" font-size="12">• Cloud Scheduler monthly retrain</text>
+              <text x="642" y="135" fill="#334155" font-size="12">  aligned to label cadence (Q#223=B)</text>
+              <text x="642" y="162" fill="#be123c" font-size="11.5" font-weight="700">✗ NEVER run 24/7 Online Endpoint!</text>
+            </svg>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Prediction Speed / Environment</th>
+                  <th>Winning Grounded Architecture</th>
+                  <th>Anti-Pattern (Eliminate Immediately)</th>
+                  <th>Bank Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Streaming Dataflow (&lt;50ms) vs. Mobile/Edge Offline</strong></td>
+                  <td><strong>Dataflow stream:</strong> Export BQML/TF as <code>SavedModel</code> + in-memory <span class="win-pill">beam.RunInference</span> (<code>Q#138=B</code>).<br><strong>Mobile / Offline device:</strong> <span class="win-pill">TFLite / Edge TPU</span> on device.</td>
+                  <td><span class="no-pill">External REST Endpoint calls per event</span> (adds 20–50ms RPC overhead) or TFLite inside server-side Dataflow</td>
+                  <td><span class="q-pill">Q#138 (B)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Sub-100ms Online Lookup &amp; Regulated Banking</strong></td>
+                  <td><span class="win-pill">Vertex Feature Store (Online)</span> / <strong>Bigtable</strong> / <strong>Memorystore</strong> + <span class="win-pill">Vertex AI Private Endpoint</span> (PSC = <em>Optimized</em> lowest latency! <code>Q#277=C</code>). Use <strong>manual scaling (`1` warm node)</strong> for low-QPS (`2 req/hr`) internal tests (<code>Q#164=B</code>).</td>
+                  <td><span class="no-pill">Querying BigQuery at Request Time</span> or routing sensitive banking traffic over public internet endpoints</td>
+                  <td><span class="q-pill">Q#80</span> <span class="q-pill">Q#163</span> <span class="q-pill">Q#164 (B)</span> <span class="q-pill">Q#253</span> <span class="q-pill">Q#277 (C)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Daily / Weekly / Monthly Batch or Monthly Labels</strong></td>
+                  <td><span class="win-pill">BQML Batch Predict</span> or <span class="win-pill">Vertex AI Batch Prediction</span> + <strong>Cloud Scheduler</strong> pipeline aligned with label cadence</td>
+                  <td><span class="no-pill">24/7 Vertex AI Online Endpoint</span> or continuous online learning when ground truth arrives monthly</td>
+                  <td><span class="q-pill">Q#105 (A)</span> <span class="q-pill">Q#223 (B)</span> <span class="q-pill">Q#255</span> <span class="q-pill">Q#343</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 3 -->
+      <article class="pattern-card" id="pattern-3" data-cat="monitor">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">3</span>
+            <h2>Explainable AI: Match the Data Type to the Method</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-indigo">Vertex Explainable AI</span>
+            <span class="tag tag-green">75% Win Rate: Sampled Shapley</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="trigger-callout">
+            <strong>Exam Trigger Keywords:</strong> <em>"explainability," "feature importance," "which factors drove the decision,"</em> or <em>"banking / regulatory transparency."</em>
+          </div>
+
+          <div class="cards-3">
+            <div class="mini-card win">
+              <h4><span>Tabular / Trees / XGBoost</span> <span class="tag tag-green">75% Win Rate</span></h4>
+              <p><strong>Pick: Sampled Shapley</strong></p>
+              <p>Works across AutoML Tables, XGBoost, Random Forests, and Tabular DNNs. Approximates Shapley values via sampling (<code>path_count</code>).</p>
+              <div><span class="q-pill">Q#75</span> <span class="q-pill">Q#88</span> <span class="q-pill">Q#89</span> <span class="q-pill">Q#178</span> <span class="q-pill">Q#227</span> <span class="q-pill">Q#275</span> <span class="q-pill">Q#301</span></div>
+            </div>
+            <div class="mini-card info">
+              <h4><span>Images / Differentiable DNNs</span> <span class="tag tag-indigo">Pixel-Level</span></h4>
+              <p><strong>Pick: Integrated Gradients</strong></p>
+              <p>Computes gradients along the path from a baseline (e.g., black image) to the actual input for differentiable neural networks.</p>
+              <div><span class="q-pill">Q#206</span> <span class="q-pill">Q#235</span></div>
+            </div>
+            <div class="mini-card warn">
+              <h4><span>Image Regions / Areas</span> <span class="tag tag-amber">Watch Distractor!</span></h4>
+              <p><strong>Pick: XRAI</strong></p>
+              <p>Segments images into superpixel regions and ranks important visual areas. <strong>Trap alert:</strong> Frequently used as a wrong distractor on tabular questions!</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data / Model Architecture</th>
+                  <th>Winning XAI Method</th>
+                  <th>Granularity</th>
+                  <th>Exam Trap Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tabular data</strong> (Tree ensembles, XGBoost, AutoML, Tabular DNN)</td>
+                  <td><span class="win-pill">Sampled Shapley</span></td>
+                  <td>Per-feature attribution</td>
+                  <td>Wins <strong>75%</strong> of all XAI questions (<span class="q-pill">Q#75</span> <span class="q-pill">Q#88</span> <span class="q-pill">Q#89</span> <span class="q-pill">Q#178</span> <span class="q-pill">Q#227</span> <span class="q-pill">Q#275</span> <span class="q-pill">Q#301</span>)</td>
+                </tr>
+                <tr>
+                  <td><strong>Images / Differentiable Neural Networks</strong></td>
+                  <td><span class="win-pill">Integrated Gradients</span></td>
+                  <td>Pixel-level / continuous input gradients</td>
+                  <td>Requires differentiable model (<span class="q-pill">Q#206</span>); cannot run on non-differentiable decision trees</td>
+                </tr>
+                <tr>
+                  <td><strong>Images needing region/patch highlights</strong></td>
+                  <td><span class="win-pill">XRAI</span></td>
+                  <td>Image regions (superpixels)</td>
+                  <td>Eliminate XRAI immediately if the dataset is CSV / BigQuery tabular data</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 4 -->
+      <article class="pattern-card" id="pattern-4" data-cat="data">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">4</span>
+            <h2>Slow GPU/TPU Training ("Input-Bound" / CPU Preprocessing Starvation)</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-blue">tf.data + Host vCPUs</span>
+            <span class="tag tag-red">Watch Invalid 3-GPU Trap!</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="trigger-callout">
+            <strong>Exam Symptoms:</strong> <em>"GPU/TPU utilization is low (~15%)," "CPU utilization is 100%," "high infeed percentage in Cloud Profiler," "hundreds of millions of BigQuery rows,"</em> or <em>"custom image preprocessing on n1-standard-8 + 1 V100."</em><br>
+            <strong>Root Cause:</strong> Your accelerator is starving while waiting on BigQuery/GCS reads or host CPU image decoding/augmentation.
+          </div>
+
+          <div class="visual-box">
+            <div class="visual-caption">
+              <span>Before vs. After — Fixing Input-Bound &amp; CPU-Starved Accelerators</span>
+              <span>Q#15, Q#28, Q#65, Q#82, Q#126, Q#132 (C), Q#314, Q#338 (C)</span>
+            </div>
+            <svg class="diagram-svg" viewBox="0 0 920 195" role="img" aria-label="Before and After tf.data Pipeline Optimization">
+              <!-- BEFORE ROW -->
+              <rect x="10" y="12" width="900" height="74" rx="10" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+              <text x="26" y="34" fill="#9f1239" font-size="11.5" font-weight="800">BEFORE (STARVING):</text>
+              <rect x="165" y="23" width="225" height="50" rx="8" fill="#ffffff" stroke="#fb7185"/>
+              <text x="277" y="45" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">Tiny CSV/JPGs or BQ Per-Epoch</text>
+              <text x="277" y="62" text-anchor="middle" fill="#64748b" font-size="10.5">High GCS metadata / BQ gRPC lag</text>
+              <text x="405" y="53" text-anchor="middle" fill="#e11d48" font-size="18" font-weight="800">→</text>
+              <rect x="420" y="23" width="220" height="50" rx="8" fill="#ffffff" stroke="#fb7185"/>
+              <text x="530" y="45" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">8 vCPUs Maxed Out (100% CPU)</text>
+              <text x="530" y="62" text-anchor="middle" fill="#64748b" font-size="10.5">Image decode starves V100 (Q#338)</text>
+              <text x="656" y="53" text-anchor="middle" fill="#e11d48" font-size="18" font-weight="800">→</text>
+              <rect x="675" y="23" width="220" height="50" rx="8" fill="#ffe4e6" stroke="#e11d48"/>
+              <text x="785" y="45" text-anchor="middle" fill="#9f1239" font-size="12.5" font-weight="800">GPU / TPU Idle (~15% Util)</text>
+              <text x="785" y="62" text-anchor="middle" fill="#9f1239" font-size="11">High Infeed % in Profiler</text>
+
+              <!-- AFTER ROW -->
+              <rect x="10" y="104" width="900" height="80" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+              <text x="26" y="128" fill="#166534" font-size="11.5" font-weight="800">AFTER (WINNING FIX):</text>
+              <rect x="165" y="116" width="168" height="54" rx="8" fill="#ffffff" stroke="#22c55e"/>
+              <text x="249" y="139" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">1. Sharded TFRecords</text>
+              <text x="249" y="157" text-anchor="middle" fill="#64748b" font-size="10.5">Export BQ once (Q#132=C)</text>
+              <text x="346" y="148" text-anchor="middle" fill="#16a34a" font-size="18" font-weight="800">→</text>
+              <rect x="360" y="116" width="180" height="54" rx="8" fill="#ffffff" stroke="#22c55e"/>
+              <text x="450" y="139" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">2. interleave() + 24 vCPUs</text>
+              <text x="450" y="157" text-anchor="middle" fill="#64748b" font-size="10.5">24 vCPU + 1 V100 (Q#338=C)</text>
+              <text x="553" y="148" text-anchor="middle" fill="#16a34a" font-size="18" font-weight="800">→</text>
+              <rect x="568" y="116" width="162" height="54" rx="8" fill="#ffffff" stroke="#22c55e"/>
+              <text x="649" y="139" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">3. prefetch(AUTOTUNE)</text>
+              <text x="649" y="157" text-anchor="middle" fill="#64748b" font-size="10.5">Overlap CPU &amp; GPU/TPU</text>
+              <text x="744" y="148" text-anchor="middle" fill="#16a34a" font-size="18" font-weight="800">→</text>
+              <rect x="758" y="116" width="138" height="54" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+              <text x="827" y="139" text-anchor="middle" fill="#166534" font-size="12.5" font-weight="800">GPU/TPU Saturated</text>
+              <text x="827" y="157" text-anchor="middle" fill="#166534" font-size="11">Max Accuracy &amp; Speed!</text>
+            </svg>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Optimization Step</th>
+                  <th>Exact Grounded API / Hardware Fix</th>
+                  <th>Why It Wins (and Trap Eliminated)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1. Materialize Binary Shards</strong></td>
+                  <td>Convert millions of small CSV/JPGs or hundreds of millions of BigQuery rows once into sharded GCS <code>TFRecord</code> files (<span class="q-pill">Q#132 (C)</span> <span class="q-pill">Q#263 (C)</span>)</td>
+                  <td>Eliminates per-file GCS metadata overhead and avoids slow BigQuery Storage Read API scans on every training epoch</td>
+                </tr>
+                <tr>
+                  <td><strong>2. Parallelize Reads &amp; Scale Host vCPUs</strong></td>
+                  <td><code>Dataset.interleave()</code> + <code>map(..., num_parallel_calls=AUTOTUNE)</code>, OR upgrade <code>n1-standard-8</code> to <strong><code>24 vCPUs + 1 V100 GPU</code></strong> (<span class="q-pill">Q#338 (C)</span>)</td>
+                  <td>Eliminates host CPU image-preprocessing starvation without hurting accuracy (<strong>Trap:</strong> <code>3 V100 GPUs</code> in Option D is an <strong>invalid GCP GPU count</strong>—only <code>1, 2, 4, 8</code> exist!)</td>
+                </tr>
+                <tr>
+                  <td><strong>3. Decouple Producer/Consumer</strong></td>
+                  <td><code>Dataset.prefetch(tf.data.AUTOTUNE)</code> (<span class="q-pill">Q#28</span> <span class="q-pill">Q#126</span> <span class="q-pill">Q#314</span>)</td>
+                  <td>CPU prepares batch <code>N+1</code> asynchronously while GPU/TPU executes forward/backward pass on batch <code>N</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 5 -->
+      <article class="pattern-card" id="pattern-5" data-cat="data">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">5</span>
+            <h2>PII, Quasi-Identifier Bucketing &amp; Cross-Slice Fairness</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-green">PMLE Study Guide v2.0 p. 32</span>
+            <span class="tag tag-blue">Privacy &amp; Fairness</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="cards-3">
+            <div class="mini-card win">
+              <h4><span>Free-Text / General PII</span> <span class="tag tag-green">Cloud DLP</span></h4>
+              <p><strong>Sensitive Data Protection (Cloud DLP)</strong></p>
+              <p>Automatically discovers, masks, de-identifies, or redacts names, SSNs, credit cards, and emails in free text, PDFs, images, GCS, or BigQuery.</p>
+              <div><span class="q-pill">Q#17</span> <span class="q-pill">Q#148</span> <span class="q-pill">Q#205</span> <span class="q-pill">Q#298</span> <span class="q-pill">Q#300</span></div>
+            </div>
+            <div class="mini-card info">
+              <h4><span>Quasi-Identifiers vs. IDs</span> <span class="tag tag-indigo">Q#140 Fix!</span></h4>
+              <p><strong>Bucketing/Coarsening vs. Tokenization</strong></p>
+              <p>For numerical/spatial quasi-identifiers (<code>AGE</code> &rarr; quantiles, <code>LATITUDE_LONGITUDE</code> &rarr; rounded single precision), <strong>coarsen/bucket</strong> to achieve <em>k</em>-anonymity while <strong>preserving ordinal &amp; spatial ML signal</strong> (hashing destroys numeric distance!). Use deterministic tokenization only for exact join keys (<code>customer_id</code>).</p>
+              <div><span class="q-pill">Q#140 (C)</span></div>
+            </div>
+            <div class="mini-card warn">
+              <h4><span>Slice Fairness (0ms Latency)</span> <span class="tag tag-amber">MinDiff</span></h4>
+              <p><strong>TensorFlow MinDiff Remediation</strong></p>
+              <p>Adds an auxiliary fairness penalty during training to equalize FPR/FNR across sensitive slices (e.g., message source languages) with <strong>zero serving latency overhead</strong> (never translate at serving time!).</p>
+              <div><span class="q-pill">Q#104 (A)</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 6 -->
+      <article class="pattern-card" id="pattern-6" data-cat="monitor">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">6</span>
+            <h2>Model Monitoring: "Skew" vs. "Drift" vs. "Attribution Drift"</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-indigo">Vertex AI Model Monitoring</span>
+            <span class="tag tag-red">Watch Q#318 Logging Conflict!</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="visual-box">
+            <div class="visual-caption">
+              <span>3-Way Monitoring Decision Switch + Hard GCP Mutual-Exclusion Rule</span>
+              <span>Check Training Data Availability First!</span>
+            </div>
+            <svg class="diagram-svg" viewBox="0 0 920 175" role="img" aria-label="3-Way Model Monitoring Switch">
+              <!-- Root -->
+              <rect x="14" y="55" width="205" height="64" rx="10" fill="#1e293b"/>
+              <text x="116" y="83" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="800">Deployed Model</text>
+              <text x="116" y="102" text-anchor="middle" fill="#94a3b8" font-size="11.5">Needs Production Monitoring</text>
+
+              <!-- Connectors -->
+              <path d="M219 87 L270 35 M219 87 L270 87 M219 87 L270 140" stroke="#64748b" stroke-width="2" fill="none"/>
+
+              <!-- Branch 1 -->
+              <rect x="270" y="10" width="380" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+              <text x="284" y="30" fill="#1e40af" font-size="12.5" font-weight="800">1. Original Training Data IS Available?</text>
+              <text x="284" y="47" fill="#334155" font-size="11.5">Compare live serving inputs vs. training baseline</text>
+              <rect x="665" y="10" width="240" height="46" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+              <text x="785" y="30" text-anchor="middle" fill="#166534" font-size="13" font-weight="800">Training-Serving Skew</text>
+              <text x="785" y="47" text-anchor="middle" fill="#15803d" font-size="11">Q#173, Q#185, Q#245, Q#325</text>
+
+              <!-- Branch 2 -->
+              <rect x="270" y="65" width="380" height="46" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+              <text x="284" y="85" fill="#92400e" font-size="12.5" font-weight="800">2. Training Data UNAVAILABLE (e.g., Vendor Model)?</text>
+              <text x="284" y="102" fill="#334155" font-size="11.5">Compare live traffic vs. rolling recent production window</text>
+              <rect x="665" y="65" width="240" height="46" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+              <text x="785" y="85" text-anchor="middle" fill="#166534" font-size="13" font-weight="800">Feature Drift (Data Drift)</text>
+              <text x="785" y="102" text-anchor="middle" fill="#15803d" font-size="11">Q#30, Q#120, Q#188, Q#227</text>
+
+              <!-- Branch 3 -->
+              <rect x="270" y="120" width="380" height="46" rx="8" fill="#eef2ff" stroke="#6366f1" stroke-width="1.5"/>
+              <text x="284" y="140" fill="#3730a3" font-size="12.5" font-weight="800">3. Feature Importance / Interactions Shifted?</text>
+              <text x="284" y="157" fill="#334155" font-size="11.5">Alert via Cloud Logging + Console (NO Req-Resp Log!)</text>
+              <rect x="665" y="120" width="240" height="46" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+              <text x="785" y="140" text-anchor="middle" fill="#166534" font-size="13" font-weight="800">Feature Attribution Drift</text>
+              <text x="785" y="157" text-anchor="middle" fill="#15803d" font-size="11">Q#274, Q#291, Q#318 (Ans A)</text>
+            </svg>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Condition in Question</th>
+                  <th>Winning Grounded Monitoring Configuration</th>
+                  <th>Bank Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Original training dataset <strong>is available</strong></td>
+                  <td><span class="win-pill">Training-Serving Skew</span> detection</td>
+                  <td><span class="q-pill">Q#173</span> <span class="q-pill">Q#185</span> <span class="q-pill">Q#245</span> <span class="q-pill">Q#325</span></td>
+                </tr>
+                <tr>
+                  <td>Original training dataset is <strong>unavailable / inaccessible</strong> (3rd-party / vendor model)</td>
+                  <td><span class="win-pill">Feature Drift</span> detection</td>
+                  <td><span class="q-pill">Q#30</span> <span class="q-pill">Q#120</span> <span class="q-pill">Q#188</span> <span class="q-pill">Q#227</span></td>
+                </tr>
+                <tr>
+                  <td>Feature importance rankings or feature interactions shift + need alerts &amp; visualization</td>
+                  <td><span class="win-pill">Feature Attribution Drift</span> + <strong>Cloud Logging alerts (<code>model_monitoring_anomaly</code>) &amp; Vertex AI Console</strong>.<br><strong>⚠ Hard GCP Rule (<code>Q#318=A</code>):</strong> Request-response logging <strong>CANNOT</strong> be enabled on an endpoint that already has Model Monitoring enabled!</td>
+                  <td><span class="q-pill">Q#274</span> <span class="q-pill">Q#291</span> <span class="q-pill">Q#318 (A)</span></td>
+                </tr>
+                <tr>
+                  <td>Need to <strong>cut monitoring cost</strong> on a high-traffic endpoint</td>
+                  <td>Lower <code>sample_rate</code> (e.g., <code>0.1</code>) in <code>RandomSampleConfig</code></td>
+                  <td><span class="q-pill">Q#190</span> <span class="q-pill">Q#291</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 7 -->
+      <article class="pattern-card" id="pattern-7" data-cat="data">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">7</span>
+            <h2>Preventing Preprocessing Skew Between Training &amp; Serving</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-blue">ML Pipelines</span>
+            <span class="tag tag-green">Zero-Skew Guarantee</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="trigger-callout">
+            <strong>Core Principle:</strong> Never maintain separate SQL/Python feature-engineering scripts for training vs. serving, and never split numeric scaling into SQL while doing categorical encoding in TensorFlow across multi-epoch BQ scans. Bake the <strong>entire transformation graph inside the exported model artifact</strong>.
+          </div>
+
+          <div class="cards-2">
+            <div class="mini-card win">
+              <h4><span>Track A: In BigQuery ML (SQL)</span> <span class="q-pill">Q#4, Q#29, Q#289</span></h4>
+              <p>Put all feature engineering inside the <code>TRANSFORM(...)</code> clause of <code>CREATE MODEL</code>.</p>
+              <p>BigQuery ML saves the exact SQL transformations inside the model so <code>ML.PREDICT</code> applies them automatically at serving time.</p>
+            </div>
+            <div class="mini-card info">
+              <h4><span>Track B: Custom TensorFlow at Scale</span> <span class="q-pill">Q#211, Q#263 (C)</span></h4>
+              <p>Run <strong>TFX (<code>ExampleGen</code> &rarr; <code>StatisticsGen</code> &rarr; <code>Transform</code>)</strong> on <strong>Cloud Dataflow</strong> and materialize sharded <strong><code>TFRecord</code>s in GCS</strong>.</p>
+              <p><code>tf.Transform</code> computes full-pass dataset stats once, eliminates slow per-epoch BigQuery reads, and embeds <code>transform_fn</code> directly inside the exported <code>SavedModel</code>.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 8 -->
+      <article class="pattern-card" id="pattern-8" data-cat="data">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">8</span>
+            <h2>Data &amp; Target Leakage Traps ("0.99 Train AUC," Lookahead Gaps &amp; Group Splits)</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-red">Leakage Trap</span>
+            <span class="tag tag-amber">0.99 AUC → Fails in Prod</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="visual-box">
+            <div class="visual-caption">
+              <span>3 Classic PMLE Leakage Boundaries + Target Leakage Diagnosis</span>
+              <span>Keep Future, Target &amp; Unseen Group Info Out of Training!</span>
+            </div>
+            <svg class="diagram-svg" viewBox="0 0 920 158" role="img" aria-label="Three Data Leakage Fixes">
+              <!-- Box 1: Time Split + Buffer Gap -->
+              <rect x="10" y="10" width="290" height="138" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+              <text x="24" y="34" fill="#0f172a" font-size="12.5" font-weight="800">1. Time Split + 30d Gap (Q#18=D, 76)</text>
+              <rect x="24" y="48" width="118" height="28" rx="5" fill="#dbeafe"/>
+              <text x="83" y="66" text-anchor="middle" fill="#1e40af" font-size="10.5" font-weight="700">Train + 30d Gap</text>
+              <rect x="146" y="48" width="66" height="28" rx="5" fill="#fef3c7"/>
+              <text x="179" y="66" text-anchor="middle" fill="#92400e" font-size="10.5" font-weight="700">Val + Gap</text>
+              <rect x="216" y="48" width="70" height="28" rx="5" fill="#dcfce7"/>
+              <text x="251" y="66" text-anchor="middle" fill="#166534" font-size="10.5" font-weight="700">Test</text>
+              <text x="24" y="100" fill="#166534" font-size="11" font-weight="700">✓ Manual split + buffer &gt; 20d LTV window</text>
+              <text x="24" y="120" fill="#be123c" font-size="11">✗ AutoML Time col = 1 col &amp; 0 buffer gap!</text>
+
+              <!-- Box 2: Group Split -->
+              <rect x="315" y="10" width="290" height="138" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+              <text x="329" y="34" fill="#0f172a" font-size="12.5" font-weight="800">2. Entity Group Split (Q#53, 184=A)</text>
+              <rect x="329" y="48" width="130" height="28" rx="5" fill="#dbeafe"/>
+              <text x="394" y="66" text-anchor="middle" fill="#1e40af" font-size="10.5" font-weight="700">Train: Store A, C</text>
+              <rect x="465" y="48" width="125" height="28" rx="5" fill="#dcfce7"/>
+              <text x="527" y="66" text-anchor="middle" fill="#166534" font-size="10.5" font-weight="700">Test: New Store B</text>
+              <text x="329" y="100" fill="#166534" font-size="11" font-weight="700">✓ Group by Author ID / store name</text>
+              <text x="329" y="120" fill="#be123c" font-size="11">✗ Never split same entity across sets</text>
+
+              <!-- Box 3: Target Leakage & Scaling -->
+              <rect x="620" y="10" width="290" height="138" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+              <text x="634" y="34" fill="#0f172a" font-size="12.5" font-weight="800">3. Target &amp; Scaling Leakage (Q#36,48=C)</text>
+              <rect x="634" y="48" width="142" height="28" rx="5" fill="#dcfce7"/>
+              <text x="705" y="66" text-anchor="middle" fill="#166534" font-size="10.5" font-weight="700">Drop Leaked Cols</text>
+              <rect x="782" y="48" width="114" height="28" rx="5" fill="#e0e7ff"/>
+              <text x="839" y="66" text-anchor="middle" fill="#3730a3" font-size="10.5" font-weight="700">Fit μ,σ on Train</text>
+              <text x="634" y="100" fill="#166534" font-size="11" font-weight="700">✓ 0.99 untuned AUC = drop leaked cols</text>
+              <text x="634" y="120" fill="#be123c" font-size="11">✗ Never normalize full dataset pre-split</text>
+            </svg>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Leakage Scenario</th>
+                  <th>Leaky Mistake / Symptom</th>
+                  <th>Correct Grounded PMLE Fix</th>
+                  <th>Bank Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Untuned model hits <code>0.99</code> training AUC ROC</strong></td>
+                  <td>Post-outcome / target-proxy column accidentally included in training features</td>
+                  <td><span class="win-pill">Diagnose Target Leakage</span> and remove features highly correlated with or derived from the target</td>
+                  <td><span class="q-pill">Q#48 (C)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Lookahead label window (20-day LTV) &amp; multi-timestamp tables</strong></td>
+                  <td>Using AutoML's <code>Time column</code> (supports only 1 column with 0 buffer gap, leaking overlapping 20-day labels) or random k-fold CV</td>
+                  <td><span class="win-pill">Manual chronological split + 30-day buffer gap</span> between Train, Val, and Test</td>
+                  <td><span class="q-pill">Q#18 (D)</span> <span class="q-pill">Q#76</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Predicting for unseen entities</strong> (new authors, new retail stores, new patients)</td>
+                  <td>Random or chronological row split puts the same store/author into both Train and Test</td>
+                  <td><span class="win-pill">Manual Group Split</span> by entity ID (<code>Author ID</code> / <code>store name</code>)</td>
+                  <td><span class="q-pill">Q#53</span> <span class="q-pill">Q#184 (A)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Feature Scaling / Normalization</strong></td>
+                  <td>Computing global <code>mean</code> / <code>std</code> on the entire dataset before splitting</td>
+                  <td><span class="win-pill">Split FIRST, fit stats ONLY on Train</span>, then reuse on Val/Test</td>
+                  <td><span class="q-pill">Q#36</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 9 -->
+      <article class="pattern-card" id="pattern-9" data-cat="data">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">9</span>
+            <h2>Class Imbalance ("&lt;1% Positives"), Symmetric F1 &amp; Unbiased Recall Auditing</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-amber">Skewed Datasets</span>
+            <span class="tag tag-green">PR-AUC, Recall &amp; F1</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Decision Area</th>
+                  <th>Winning Grounded Answer</th>
+                  <th>Trap Answer to Eliminate</th>
+                  <th>Bank Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Training / Sampling Fix (&lt;1% positives)</strong></td>
+                  <td><span class="win-pill">Downsample majority class + upweight</span> downsampled examples (preserves calibrated probabilities), OR <strong>class-weighted loss + resampling</strong></td>
+                  <td><span class="no-pill">Hard 1:1 deletion without upweighting</span> (throws away 98%+ of dataset and distorts probability calibration)</td>
+                  <td><span class="q-pill">Q#3</span> <span class="q-pill">Q#149</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Evaluation Metric (Costly False Negatives)</strong></td>
+                  <td><span class="win-pill">Precision-Recall AUC (PR-AUC)</span>, or <strong>Recall / Minimize FN</strong> when missing fraud, cancer, or policy violations is costly</td>
+                  <td><span class="no-pill">Raw Accuracy</span> (predicting all zeros gets 99%+ accuracy!) or ROC-AUC alone on extreme skew</td>
+                  <td><span class="q-pill">Q#69</span> <span class="q-pill">Q#141</span> <span class="q-pill">Q#169</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Evaluation Metric (Skewed Binary, Symmetric FP/FN Cost)</strong></td>
+                  <td><span class="win-pill">F1 Score</span> when negatives are ~96% of data and false positives / false negatives have equal business cost</td>
+                  <td><span class="no-pill">Accuracy or Precision alone</span> (ignores false negatives or gets inflated by true negatives)</td>
+                  <td><span class="q-pill">Q#90 (C)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Estimating Live Production Recall (Moderation / Fraud)</strong></td>
+                  <td>Route an unbiased <span class="win-pill">0.1% random sample of ALL raw traffic</span> to human reviewers so unflagged <code>FN</code>s are observed (<code>Recall = TP / (TP + FN)</code>)</td>
+                  <td><span class="no-pill">Reviewing only model-flagged items</span> (measures Precision only; unflagged <code>FN</code>s are never seen!)</td>
+                  <td><span class="q-pill">Q#85 (C)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- PATTERN 10 -->
+      <article class="pattern-card" id="pattern-10" data-cat="genai">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge">10</span>
+            <h2>GenAI &amp; Gemini Enterprise Agent Platform (June 2026 Exam Guide)</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-indigo">Gemini Enterprise &amp; MaaS</span>
+            <span class="tag tag-green">Modern PMLE Focus</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="cards-3">
+            <div class="mini-card info">
+              <h4><span>Private DSL / Style / Verbosity</span></h4>
+              <p><strong>Supervised Fine-Tuning (SFT)</strong></p>
+              <p>Use prompt-response pairs to teach unseen syntax (<code>MechScript</code>), author tone, or consistent answer length.</p>
+              <div><span class="q-pill">Q#327</span> <span class="q-pill">Q#329</span> <span class="q-pill">Q#341</span> <span class="q-pill">Q#351</span> <span class="q-pill">Q#373</span></div>
+            </div>
+            <div class="mini-card win">
+              <h4><span>Self-Host LLM on Custom VM</span></h4>
+              <p><strong>Llama (Open-Weight) in Model Garden</strong></p>
+              <p>Eliminate <strong>Gemini</strong> (closed API-only) and eliminate <strong>BERT</strong> (encoder-only, cannot generate text).</p>
+              <div><span class="q-pill">Q#327</span> <span class="q-pill">Q#351</span></div>
+            </div>
+            <div class="mini-card win">
+              <h4><span>Prompt Injection / Toxicity</span> <span class="tag tag-green">100%</span></h4>
+              <p><strong>Model Armor</strong></p>
+              <p>Inline request &amp; response sanitization against jailbreaks, prompt injections, PII leaks, and hate speech.</p>
+              <div><span class="q-pill">Q#371</span> <span class="q-pill">Q#375</span></div>
+            </div>
+            <div class="mini-card info">
+              <h4><span>Agent Platform &amp; Context Cache</span></h4>
+              <p><strong>Agent Builder + Explicit Caching</strong></p>
+              <p>Managed enterprise RAG/search (<code>Q#303</code>) + <strong>Explicit Context Caching</strong> for repeated massive static prompts (<code>Q#345</code>).</p>
+              <div><span class="q-pill">Q#303</span> <span class="q-pill">Q#345</span></div>
+            </div>
+            <div class="mini-card info">
+              <h4><span>Partner MaaS &amp; Multi-User NB</span></h4>
+              <p><strong>DeepSeek MaaS SDK + Colab Enterprise</strong></p>
+              <p>Call DeepSeek-V3.2 MaaS via OpenAI SDK <code>base_url</code> (<code>Q#355</code>); use <strong>Colab Enterprise</strong> for live multi-user notebooks (<code>Q#311</code>).</p>
+              <div><span class="q-pill">Q#311</span> <span class="q-pill">Q#355</span></div>
+            </div>
+            <div class="mini-card warn">
+              <h4><span>Distributed Python &amp; LLM Infra</span></h4>
+              <p><strong>Ray Data / B200+Slurm / TPU v5p FSDP</strong></p>
+              <p>Fix <code>pandas</code> OOM with <strong>Ray Data</strong> (<code>Q#342</code>); scale 1T-token LLMs on <strong>B200 + Managed Lustre + Slurm</strong> (<code>Q#344</code>) or <strong>TPU v5p FSDP</strong> (<code>Q#366</code>).</p>
+              <div><span class="q-pill">Q#319 (D)</span> <span class="q-pill">Q#342</span> <span class="q-pill">Q#344</span> <span class="q-pill">Q#366</span></div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>GenAI / Modern MLOps Scenario</th>
+                  <th>Winning Google Cloud Solution</th>
+                  <th>Why Common Distractors Lose</th>
+                  <th>Bank Examples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Learn private coding language (<code>MechScript</code>), author writing style, or response verbosity</td>
+                  <td><span class="win-pill">Supervised Fine-Tuning (SFT)</span></td>
+                  <td>Few-shot prompt engineering hits context limits and fails to internalize full unseen grammar</td>
+                  <td><span class="q-pill">Q#327</span> <span class="q-pill">Q#329</span> <span class="q-pill">Q#341</span> <span class="q-pill">Q#351</span> <span class="q-pill">Q#373</span></td>
+                </tr>
+                <tr>
+                  <td>Self-host a generative LLM on a custom VM or GKE</td>
+                  <td><span class="win-pill">Llama (open-weight)</span> or <span class="win-pill">GKE Autopilot + GCS FUSE caching</span></td>
+                  <td><strong>Gemini</strong> is proprietary API-only; <strong>BERT</strong> is encoder-only and cannot generate text</td>
+                  <td><span class="q-pill">Q#319 (D)</span> <span class="q-pill">Q#327</span> <span class="q-pill">Q#351</span></td>
+                </tr>
+                <tr>
+                  <td>Semantic search / RAG over company docs + ranking retrieval metrics</td>
+                  <td><span class="win-pill">Vertex AI Agent Builder / Search</span>; evaluate top-<em>k</em> retrieval with <strong>Precision@k, Recall@k, MRR</strong></td>
+                  <td>Custom Vector Search violates "minimal effort"; ROUGE/BLEU evaluate text overlap, not retrieval rank</td>
+                  <td><span class="q-pill">Q#99 (B)</span> <span class="q-pill">Q#299 (A)</span> <span class="q-pill">Q#303</span></td>
+                </tr>
+                <tr>
+                  <td>Integrate Partner MaaS (e.g., <strong>DeepSeek-V3.2</strong>) or cut repeated long-context token cost</td>
+                  <td><span class="win-pill">OpenAI SDK pointed at Vertex MaaS base_url</span> (<code>Q#355</code>); <span class="win-pill">Explicit Context Caching</span> (<code>Q#345</code>)</td>
+                  <td>Self-hosting 671B weights wastes ops effort when serverless MaaS endpoint exists</td>
+                  <td><span class="q-pill">Q#345</span> <span class="q-pill">Q#355</span></td>
+                </tr>
+                <tr>
+                  <td>Block prompt injections, jailbreaks, PII leaks, or hate speech inline</td>
+                  <td><span class="win-pill">Model Armor</span> <em>(wins 100% of appearances)</em></td>
+                  <td>Offline log audits do not block malicious prompts inline</td>
+                  <td><span class="q-pill">Q#371</span> <span class="q-pill">Q#375</span></td>
+                </tr>
+                <tr>
+                  <td>Real-time multi-user notebook collaboration vs. single-node <code>pandas</code> OOM</td>
+                  <td><span class="win-pill">Colab Enterprise</span> (<code>Q#311</code>); <span class="win-pill">Ray on Vertex AI + Ray Data</span> (<code>Q#342</code>)</td>
+                  <td>Vertex AI Workbench instances are single-user; vertical VM scaling hits RAM ceilings</td>
+                  <td><span class="q-pill">Q#311</span> <span class="q-pill">Q#342</span></td>
+                </tr>
+                <tr>
+                  <td>1T-token pretraining / 100B+ LLM sharding across accelerator pods</td>
+                  <td><span class="win-pill">A3 Ultra (B200) + Managed Lustre + Slurm</span> (<code>Q#344</code>) or <span class="win-pill">TPU v5p + FSDP</span> (<code>Q#366</code>)</td>
+                  <td>Pure data parallelism (DDP) cannot fit 100B+ optimizer states &amp; weights in single-chip HBM</td>
+                  <td><span class="q-pill">Q#344</span> <span class="q-pill">Q#366</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- INSTANT ELIMINATION RED FLAGS -->
+      <article class="pattern-card" id="red-flags" data-cat="redflags">
+        <div class="pattern-header">
+          <div class="pattern-title-group">
+            <span class="pattern-badge" style="background: var(--red);">!</span>
+            <h2>8 Grounded "Instant Elimination" Red Flags (Official GCP Quotas &amp; Traps)</h2>
+          </div>
+          <div class="pattern-tags">
+            <span class="tag tag-red">Eliminate On Sight</span>
+          </div>
+        </div>
+        <div class="pattern-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 44px;">#</th>
+                  <th>If an Option Suggests This... (WRONG)</th>
+                  <th>Why It Fails in Official GCP Docs</th>
+                  <th>Pick This Grounded Winner Instead</th>
+                  <th style="width: 96px;">Ref</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1</strong></td>
+                  <td><span class="no-pill">Attaching 3 NVIDIA Tesla V100 GPUs to a Vertex AI N1 VM</span></td>
+                  <td><strong>Invalid GCP GPU count!</strong> Compute Engine / Vertex AI N1 VMs support only <code>1, 2, 4, or 8</code> V100 GPUs—requesting <code>3</code> fails API validation</td>
+                  <td>Upgrade <code>WorkerPoolSpec</code> to <strong><code>24 vCPUs + 1 V100 GPU</code> (Ans C)</strong> to fix CPU image-preprocessing starvation</td>
+                  <td><span class="q-pill">Q#338</span></td>
+                </tr>
+                <tr>
+                  <td><strong>2</strong></td>
+                  <td><span class="no-pill">Training Vertex AI AutoML Tabular / Forecasting on &lt; 1,000 rows</span></td>
+                  <td><strong>Hard GCP validation failure!</strong> AutoML strictly requires <code>&ge; 1,000</code> rows (<code>365</code> daily rows is rejected)</td>
+                  <td>Train a <strong>BigQuery ML Regression model (Ans A)</strong> directly on the 365-row table</td>
+                  <td><span class="q-pill">Q#207</span></td>
+                </tr>
+                <tr>
+                  <td><strong>3</strong></td>
+                  <td><span class="no-pill">Enabling Request-Response Logging when Model Monitoring is active</span></td>
+                  <td><strong>Hard GCP mutual exclusion!</strong> Model Monitoring already logs sampled payloads to BigQuery; enabling both is blocked</td>
+                  <td>Configure <strong>Cloud Logging alerts (<code>model_monitoring_anomaly</code>) + Vertex AI Console (Ans A)</strong></td>
+                  <td><span class="q-pill">Q#318</span></td>
+                </tr>
+                <tr>
+                  <td><strong>4</strong></td>
+                  <td><span class="no-pill">Re-scanning 100M+ BigQuery rows per epoch or splitting SQL/TF transforms</span></td>
+                  <td>Creates massive gRPC I/O bottlenecks on every epoch and risks training-serving preprocessing skew</td>
+                  <td>Run <strong>TFX (<code>tf.Transform</code>) on Dataflow &rarr; sharded GCS <code>TFRecord</code>s (Ans C)</strong></td>
+                  <td><span class="q-pill">Q#132</span> <span class="q-pill">Q#263</span></td>
+                </tr>
+                <tr>
+                  <td><strong>5</strong></td>
+                  <td><span class="no-pill">Training supervised ML on synthetic z-score heuristic labels (0 real labels)</span></td>
+                  <td>Violates Google's <em>Rules of ML</em> Rule #1—the model merely memorizes noisy heuristic thresholds</td>
+                  <td><strong>Deploy &amp; evaluate the live heuristic first</strong> while collecting verified incident labels</td>
+                  <td><span class="q-pill">Q#94</span> <span class="q-pill">Q#139</span></td>
+                </tr>
+                <tr>
+                  <td><strong>6</strong></td>
+                  <td><span class="no-pill">Estimating Recall solely from model-flagged comments or alerts</span></td>
+                  <td>Selection bias! Unflagged False Negatives (<code>FN</code>) are never seen, measuring Precision instead of Recall</td>
+                  <td>Route an unbiased <strong><code>0.1%</code> random sample of raw comments</strong> to human moderators (Ans C)</td>
+                  <td><span class="q-pill">Q#85</span></td>
+                </tr>
+                <tr>
+                  <td><strong>7</strong></td>
+                  <td><span class="no-pill">Deploying a 24/7 online Vertex AI Endpoint for monthly/weekly batch jobs</span></td>
+                  <td>Pays 24/7 for idle VMs when predictions or national ground-truth labels arrive periodically</td>
+                  <td>Use <strong>Vertex AI Batch Prediction / BQML Batch</strong> + <strong>Cloud Scheduler</strong></td>
+                  <td><span class="q-pill">Q#223</span> <span class="q-pill">Q#255</span></td>
+                </tr>
+                <tr>
+                  <td><strong>8</strong></td>
+                  <td><span class="no-pill">Switching to a TPU pod without tf.distribute.Strategy (or 1:1 majority deletion)</span></td>
+                  <td>Single-device TF code ignores extra TPU chips; deleting 98% of majority rows ruins calibration; manual lineage code adds toil</td>
+                  <td>Refactor with <strong><code>tf.distribute.Strategy</code></strong> (<code>Q#96=D</code>), downsample + upweight (<code>Q#3</code>), and use <strong>Vertex AI Pipelines</strong> lineage (<code>Q#305</code>)</td>
+                  <td><span class="q-pill">Q#3</span> <span class="q-pill">Q#96</span> <span class="q-pill">Q#305</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <div id="emptyState" class="empty-state" hidden>
+        No patterns matched your search query. Try searching for keywords like <strong>BQML</strong>, <strong>Shapley</strong>, <strong>Drift</strong>, <strong>MinDiff</strong>, <strong>Llama</strong>, or a question number like <strong>Q#338</strong>.
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const htmlEl = document.documentElement;
+      const themeBtn = document.getElementById('themeBtn');
+      const searchInput = document.getElementById('searchInput');
+      const filterChips = document.querySelectorAll('.filter-chip');
+      const cards = document.querySelectorAll('.pattern-card');
+      const filterStatus = document.getElementById('filterStatus');
+      const emptyState = document.getElementById('emptyState');
+
+      let activeCategory = 'all';
+
+      function applyTheme(theme) {
+        htmlEl.setAttribute('data-theme', theme);
+        themeBtn.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+      }
+
+      try {
+        const saved = localStorage.getItem('pmle_study_theme');
+        if (saved === 'dark' || saved === 'light') {
+          applyTheme(saved);
+        }
+      } catch (_) {}
+
+      themeBtn.addEventListener('click', function () {
+        const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem('pmle_study_theme', next); } catch (_) {}
+      });
+
+      function updateFilter() {
+        const q = (searchInput.value || '').trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+          const cat = card.getAttribute('data-cat');
+          const matchesCat = activeCategory === 'all' || cat === activeCategory;
+          const matchesQuery = !q || (card.textContent || '').toLowerCase().indexOf(q) !== -1;
+          const show = matchesCat && matchesQuery;
+          card.hidden = !show;
+          if (show) visibleCount += 1;
+        });
+
+        emptyState.hidden = visibleCount > 0;
+        filterStatus.textContent = 'Showing ' + visibleCount + ' of ' + cards.length + ' sections';
+      }
+
+      filterChips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          filterChips.forEach(function (c) { c.classList.remove('active'); });
+          chip.classList.add('active');
+          activeCategory = chip.getAttribute('data-filter') || 'all';
+          updateFilter();
+        });
+      });
+
+      searchInput.addEventListener('input', updateFilter);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === '/' && document.activeElement !== searchInput) {
+          e.preventDefault();
+          searchInput.focus();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

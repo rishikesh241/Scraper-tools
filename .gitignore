@@ -5,3 +5,7 @@ __pycache__/
 clean_pages/
 *_smoke*.txt
 * dumps.txt
+.examtopics_cache_test/
+.examtopics_cache_auth/
+.DS_Store
+

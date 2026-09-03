@@ -1,4 +1,3 @@
-
 import json
 from typing import Dict, List
 
@@ -27,6 +26,18 @@ def write_grouped_links_to_file(filename: str, links: List[str]):
 _DIVIDER = "═" * 60
 
 
+def _format_option_letters(letters: str, options: Dict[str, str]) -> str:
+    if not letters:
+        return "Not available"
+    parts = []
+    for ch in letters:
+        if ch in options:
+            parts.append(f"{ch}. {options[ch]}")
+        else:
+            parts.append(ch)
+    return "\n  ".join(parts)
+
+
 def format_question(q: Dict, index: int) -> str:
     """Format one parsed question dict into a readable text block."""
     lines = []
@@ -52,8 +63,24 @@ def format_question(q: Dict, index: int) -> str:
         lines.append("")
 
     most_voted = q.get("most_voted", "")
-    community_answer = q.get("community_answer", "")
-    if community_answer:
+    community_answer = _format_option_letters(most_voted, options) if most_voted else q.get("community_answer", "")
+    verified_answer = q.get("verified_answer", "")
+    counter_note = q.get("counter_note", "")
+
+    if counter_note or (verified_answer and verified_answer != most_voted):
+        v_letters = verified_answer or most_voted
+        v_full = _format_option_letters(v_letters, options)
+        lines.append(f"Most Accepted / Verified Answer:\n  {v_full}")
+        if most_voted and most_voted != v_letters:
+            orig_one_line = "; ".join(
+                f"{ch}. {options.get(ch, '')}".strip() for ch in most_voted
+            )
+            lines.append(f"  (Original Community Most Voted: {orig_one_line})")
+        lines.append("")
+        if counter_note:
+            lines.append(f"Counter / Study Note:\n  {counter_note}")
+            lines.append("")
+    elif community_answer:
         lines.append(f"Most Accepted Answer:\n  {community_answer}")
         lines.append("")
 
@@ -61,7 +88,6 @@ def format_question(q: Dict, index: int) -> str:
     if discussion:
         lines.append("Discussion:")
         for i, comment in enumerate(discussion, 1):
-            # wrap long comments at ~100 chars
             if len(comment) > 120:
                 comment = comment[:117] + "..."
             lines.append(f"  {i}. {comment}")

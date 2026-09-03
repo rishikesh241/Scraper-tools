@@ -65,9 +65,15 @@ class HttpFetcher:
                 return cached_html
 
         last_error = None
-        for attempt in range(1, self.retries + 1):
+        max_attempts = max(self.retries, 5)
+        for attempt in range(1, max_attempts + 1):
             try:
                 response = self.session_factory.get().get(url, timeout=self.timeout)
+                if response.status_code == 429:
+                    retry_after = int(response.headers.get("Retry-After", 0) or 0)
+                    wait_sec = max(retry_after, 4.0 * attempt)
+                    time.sleep(wait_sec)
+                    response.raise_for_status()
                 response.raise_for_status()
                 raise_if_blocked(response.text)
                 if self.cache is not None:
@@ -75,8 +81,9 @@ class HttpFetcher:
                 return response.text
             except Exception as exc:
                 last_error = exc
-                if attempt < self.retries:
-                    time.sleep(1.0 * attempt)
+                if attempt < max_attempts:
+                    time.sleep(1.5 * attempt)
 
         raise RuntimeError(f"Failed to load {url}: {last_error}")
+
 

@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <!-- TODO(security): When serving over HTTP/HTTPS, configure server headers: Content-Security-Policy (with script/style hashes or nonces), X-Frame-Options: DENY, and Permissions-Policy: camera=(), microphone=(), geolocation=(). Inline styles and scripts are retained here so this study guide works offline as a standalone file:// document. -->
+  <title>Google Cloud PMLE Rapid Revision Cheat Sheet (2-Day Sprint)</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --surface-hover: #e2e8f0;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-soft: #64748b;
+      --blue: #1a73e8;
+      --blue-bg: #eff6ff;
+      --blue-border: #bfdbfe;
+      --blue-text: #1e40af;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --green-text: #166534;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+      --amber-text: #92400e;
+      --red: #e11d48;
+      --red-bg: #fff1f2;
+      --red-border: #fecdd3;
+      --red-text: #9f1239;
+      --indigo: #4f46e5;
+      --indigo-bg: #eef2ff;
+      --indigo-border: #c7d2fe;
+      --indigo-text: #3730a3;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07);
+      --radius: 14px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", "Fira Code", ui-monospace, Menlo, Monaco, Consolas, monospace;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-alt: #1e293b;
+      --surface-hover: #334155;
+      --border: #1f2937;
+      --border-strong: #374151;
+      --text: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-soft: #94a3b8;
+      --blue: #60a5fa;
+      --blue-bg: rgba(37, 99, 235, 0.16);
+      --blue-border: rgba(96, 165, 250, 0.35);
+      --blue-text: #93c5fd;
+      --green: #34d399;
+      --green-bg: rgba(16, 185, 129, 0.14);
+      --green-border: rgba(52, 211, 153, 0.35);
+      --green-text: #6ee7b7;
+      --amber: #fbbf24;
+      --amber-bg: rgba(245, 158, 11, 0.15);
+      --amber-border: rgba(251, 191, 36, 0.35);
+      --amber-text: #fde68a;
+      --red: #fb7185;
+      --red-bg: rgba(225, 29, 72, 0.15);
+      --red-border: rgba(251, 113, 133, 0.35);
+      --red-text: #fda4af;
+      --indigo: #818cf8;
+      --indigo-bg: rgba(79, 70, 229, 0.18);
+      --indigo-border: rgba(129, 140, 248, 0.35);
+      --indigo-text: #c7d2fe;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.58;
+      font-size: 14.8px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Top Suite Navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .topbar-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+    .brand-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+    }
+    .suite-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .nav-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      text-decoration: none;
+    }
+    .nav-pill:hover { color: var(--text); border-color: var(--border-strong); }
+    .nav-pill.active {
+      background: var(--blue-bg);
+      color: var(--blue-text);
+      border-color: var(--blue-border);
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-input {
+      width: 230px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--blue); background: var(--surface); }
+    .icon-btn {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .icon-btn:hover { background: var(--surface-hover); }
+
+    /* Hero + Scorecard Priority Bar */
+    .hero {
+      max-width: 1400px;
+      margin: 22px auto 0;
+      padding: 0 20px;
+    }
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 26px 30px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .hero-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .sprint-badge {
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--red-bg);
+      color: var(--red-text);
+      border: 1px solid var(--red-border);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Segmented Exam Weight Visual */
+    .weight-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .weight-bar-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-soft);
+    }
+    .weight-bar {
+      display: flex;
+      width: 100%;
+      height: 30px;
+      border-radius: 9px;
+      overflow: hidden;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .wb-seg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid rgba(255, 255, 255, 0.35);
+    }
+    .wb-seg:last-child { border-right: none; }
+
+    .priority-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .prio-card {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .prio-1 { background: var(--red-bg); border-color: var(--red-border); }
+    .prio-2 { background: var(--amber-bg); border-color: var(--amber-border); }
+    .prio-3 { background: var(--green-bg); border-color: var(--green-border); }
+    .prio-head {
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .prio-1 .prio-head { color: var(--red-text); }
+    .prio-2 .prio-head { color: var(--amber-text); }
+    .prio-3 .prio-head { color: var(--green-text); }
+    .prio-desc { font-size: 13px; color: var(--text); }
+
+    /* Main Layout */
+    .layout {
+      max-width: 1400px;
+      margin: 22px auto 60px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc-sidebar { position: static !important; }
+    }
+
+    .toc-sidebar {
+      position: sticky;
+      top: 74px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .toc-group-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-soft);
+      margin: 12px 0 6px;
+    }
+    .toc-group-title:first-child { margin-top: 0; }
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .toc-link {
+      display: block;
+      padding: 5px 9px;
+      border-radius: 7px;
+      font-size: 12.8px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .toc-link:hover { background: var(--surface-alt); color: var(--text); }
+
+    .content-col {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .section-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border-strong);
+      scroll-margin-top: 80px;
+    }
+    .section-banner h2 {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      scroll-margin-top: 82px;
+    }
+    .card-head {
+      padding: 15px 22px;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-head h3 { font-size: 16.5px; font-weight: 800; }
+    .card-body {
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Rapid Flowchart Dual Grid */
+    .dual-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+      gap: 16px;
+    }
+    .flow-panel {
+      background: #f8fafc;
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 14px;
+      overflow-x: auto;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+    th {
+      background: var(--surface-alt);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px 13px;
+      border-bottom: 1px solid var(--border-strong);
+    }
+    td {
+      padding: 10px 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--surface-alt); }
+
+    /* Counter-Notes Filter Controls */
+    .override-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .sec-btn {
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .sec-btn:hover { border-color: var(--blue); color: var(--text); }
+    .sec-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #ffffff;
+    }
+    .override-count {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-soft);
+    }
+
+    /* Badges */
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 1.5px 5px;
+      border-radius: 5px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--indigo-text);
+    }
+    .q-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      margin: 1px;
+      border-radius: 6px;
+      background: var(--indigo-bg);
+      color: var(--indigo-text);
+      border: 1px solid var(--indigo-border);
+      white-space: nowrap;
+    }
+    .sec-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--blue-bg);
+      color: var(--blue-text);
+      border: 1px solid var(--blue-border);
+      white-space: nowrap;
+    }
+    .ans-verified {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 6px;
+      background: var(--green-bg);
+      color: var(--green-text);
+      border: 1px solid var(--green-border);
+      white-space: nowrap;
+    }
+    .ans-raw-diff {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--red-bg);
+      color: var(--red-text);
+      border: 1px solid var(--red-border);
+      text-decoration: line-through;
+      white-space: nowrap;
+    }
+    .ans-raw-same {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--surface-alt);
+      color: var(--text-soft);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .weight-pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      background: var(--red-bg);
+      color: var(--red-text);
+      border: 1px solid var(--red-border);
+    }
+
+    /* 8 Diagram Blueprints Grid */
+    .blueprint-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 14px;
+    }
+    .bp-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bp-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bp-flow {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px dashed var(--border-strong);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-text);
+    }
+    .bp-desc { font-size: 12.8px; color: var(--text-muted); }
+
+    @media print {
+      .topbar, .toc-sidebar, .override-toolbar { display: none !important; }
+      .layout { grid-template-columns: 1fr; margin: 0; }
+      .card { break-inside: avoid; box-shadow: none; margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Suite Navigation -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span>Google Cloud PMLE Study Suite</span>
+      </div>
+      <nav class="suite-nav" aria-label="Study Guides">
+        <a class="nav-pill" href="PMLE_Reliable_Patterns.html">1. 10 Reliable Patterns</a>
+        <a class="nav-pill" href="PMLE_Patterns_and_Core_Concepts_Guide.html">2. Core Concepts &amp; Flowcharts</a>
+        <a class="nav-pill active" href="PMLE_Rapid_Revision_Cheat_Sheet.html">3. 2-Day Sprint Cheat Sheet</a>
+        <a class="nav-pill" href="PMLE_Q200_to_375_Rapid_Revision.html">4. Q#200–375 Elimination Matrix</a>
+        <a class="nav-pill" href="index.html">Practice App (375 Qs)</a>
+      </nav>
+      <div class="topbar-actions">
+        <input id="globalSearch" class="search-input" type="search" placeholder="Search Q#, service, rule (press /)" aria-label="Search cheat sheet">
+        <button id="themeBtn" class="icon-btn" type="button">Dark Mode</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero + August Scorecard Priority Breakdown -->
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-title-row">
+        <h1>Google Cloud PMLE Rapid Revision Cheat Sheet</h1>
+        <span class="sprint-badge">Grounded Notebook Verified • June 2026 Guide</span>
+      </div>
+
+      <div class="weight-bar-wrap">
+        <div class="weight-bar-label">Target Exam Weight Allocation (Aligned with Official 6 PMLE Sections &amp; Grounded Notebook Truth)</div>
+        <div class="weight-bar" role="img" aria-label="51% Priority 1 Does Not Meet, 29% Priority 2 Borderline, 21% Priority 3 Meets">
+          <div class="wb-seg" style="width: 20%; background: #dc2626;" title="Section 4: Serving &amp; Scaling (20%)">Sec 4 (20%)</div>
+          <div class="wb-seg" style="width: 18%; background: #e11d48;" title="Section 5: ML Pipelines (18%)">Sec 5 (18%)</div>
+          <div class="wb-seg" style="width: 13%; background: #f43f5e;" title="Section 1: Low-Code AI (13%)">Sec 1 (13%)</div>
+          <div class="wb-seg" style="width: 16%; background: #d97706;" title="Section 2: Data &amp; Collaboration (16%)">Sec 2 (16%)</div>
+          <div class="wb-seg" style="width: 13%; background: #f59e0b;" title="Section 6: Monitoring AI (13%)">Sec 6 (13%)</div>
+          <div class="wb-seg" style="width: 21%; background: #16a34a;" title="Section 3: Scaling Prototypes (21%)">Sec 3 (21%)</div>
+        </div>
+      </div>
+
+      <div class="priority-grid">
+        <div class="prio-card prio-1">
+          <div class="prio-head">
+            <span>Priority 1 • "Does Not Meet"</span>
+            <span>51% of Exam</span>
+          </div>
+          <div class="prio-desc">
+            <strong>Sec 4</strong> Serving &amp; Scaling (20%) • <strong>Sec 5</strong> ML Pipelines (18%) • <strong>Sec 1</strong> Low-Code AI (13%)
+          </div>
+        </div>
+        <div class="prio-card prio-2">
+          <div class="prio-head">
+            <span>Priority 2 • "Borderline"</span>
+            <span>29% of Exam</span>
+          </div>
+          <div class="prio-desc">
+            <strong>Sec 2</strong> Data &amp; Collaboration (16%) • <strong>Sec 6</strong> Monitoring AI &amp; Model Armor (13%)
+          </div>
+        </div>
+        <div class="prio-card prio-3">
+          <div class="prio-head">
+            <span>Priority 3 • "Meets"</span>
+            <span>21% of Exam</span>
+          </div>
+          <div class="prio-desc">
+            <strong>Sec 3</strong> Scaling Prototypes (21%) — <em>Focus on Grounded GPU/TPU limits, SFT &amp; 1T-token HPC.</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Layout -->
+  <div class="layout">
+
+    <!-- Sticky TOC -->
+    <aside class="toc-sidebar" aria-label="Cheat Sheet Navigation">
+      <div class="toc-group-title">0 • Trees &amp; Hard Limits</div>
+      <ul class="toc-list">
+        <li><a class="toc-link" href="#sec-0">Laziness &amp; Monitoring Trees</a></li>
+        <li><a class="toc-link" href="#sec-limits">Hard GCP Limits &amp; June 2026</a></li>
+      </ul>
+      <div class="toc-group-title">1 • Priority 1 Matrices (51%)</div>
+      <ul class="toc-list">
+        <li><a class="toc-link" href="#sec-4">Sec 4: Serving &amp; Scaling (20%)</a></li>
+        <li><a class="toc-link" href="#sec-5">Sec 5: ML Pipelines (18%)</a></li>
+        <li><a class="toc-link" href="#sec-1">Sec 1: Low-Code AI (13%)</a></li>
+      </ul>
+      <div class="toc-group-title">2 • 65 Grounded Overrides</div>
+      <ul class="toc-list">
+        <li><a class="toc-link" href="#part-a">Part A: Q#1–199 (28 Notes)</a></li>
+        <li><a class="toc-link" href="#part-b">Part B: Q#200–375 (37 Notes)</a></li>
+      </ul>
+      <div class="toc-group-title">3 • Diagram Questions</div>
+      <ul class="toc-list">
+        <li><a class="toc-link" href="#sec-diagrams">All 8 Diagram Questions</a></li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <main class="content-col">
+
+      <!-- ==================== 0. DECISION FLOWCHARTS ==================== -->
+      <div class="section-banner" id="sec-0">
+        <h2>0. Rapid-Revision Decision Flowcharts &amp; Hard GCP Platform Limits</h2>
+      </div>
+
+      <div class="dual-flow searchable-block">
+        <!-- Tree A -->
+        <div class="flow-panel">
+          <svg viewBox="0 0 440 250" style="width: 100%; height: auto;" role="img" aria-label="Laziness Ladder Decision Tree">
+            <text x="12" y="20" fill="#0f172a" font-size="13" font-weight="800">A. "The Laziness Ladder" (Pick Lowest-Effort Tool)</text>
+            <rect x="12" y="32" width="416" height="36" rx="7" fill="#f1f5f9" stroke="#64748b"/>
+            <text x="22" y="48" fill="#0f172a" font-size="11.5" font-weight="700">0. Exact demand known OR 0 labels? → NO ML (Heuristic / VRP)</text>
+            <text x="22" y="62" fill="#475569" font-size="10.5">Launch live heuristic first — never train ML on fake labels! (Q#2, Q#94, Q#139)</text>
+
+            <rect x="12" y="75" width="416" height="36" rx="7" fill="#dcfce7" stroke="#16a34a"/>
+            <text x="22" y="91" fill="#14532d" font-size="11.5" font-weight="700">1. Generic Vision/Text/Speech/Docs? → PRE-TRAINED API</text>
+            <text x="22" y="105" fill="#166534" font-size="10.5">Cloud Vision, Document AI, Natural Language API (Q#12, Q#286)</text>
+
+            <rect x="12" y="118" width="416" height="36" rx="7" fill="#dbeafe" stroke="#2563eb"/>
+            <text x="22" y="134" fill="#1e3a8a" font-size="11.5" font-weight="700">2. Tabular in BQ / SQL team / &lt;1,000 rows? → BIGQUERY ML</text>
+            <text x="22" y="148" fill="#1e40af" font-size="10.5">TRANSFORM() prevents skew; handles &lt;1,000 rows! (Q#207, Q#289, Q#352)</text>
+
+            <rect x="12" y="161" width="416" height="36" rx="7" fill="#e0e7ff" stroke="#4f46e5"/>
+            <text x="22" y="177" fill="#312e81" font-size="11.5" font-weight="700">3. Custom labeled (&ge;1,000 rows) + no code? → VERTEX AUTOML</text>
+            <text x="22" y="191" fill="#3730a3" font-size="10.5">Or Document AI Custom Extractor (Q#200, Q#265, Q#354)</text>
+
+            <rect x="12" y="204" width="416" height="36" rx="7" fill="#f3e8ff" stroke="#7c3aed"/>
+            <text x="22" y="220" fill="#4c1d95" font-size="11.5" font-weight="700">4. Custom architecture / PyTorch / TF? → CUSTOM TRAINING</text>
+            <text x="22" y="234" fill="#5b21b6" font-size="10.5">Refactor with tf.distribute.Strategy for multi-GPU/TPU (Q#96, Q#116, Q#198)</text>
+          </svg>
+        </div>
+
+        <!-- Tree B -->
+        <div class="flow-panel">
+          <svg viewBox="0 0 440 250" style="width: 100%; height: auto;" role="img" aria-label="Monitoring and Explainability Decision Tree">
+            <text x="12" y="20" fill="#0f172a" font-size="13" font-weight="800">B. Monitoring &amp; Explainability Switch</text>
+            <rect x="12" y="32" width="416" height="68" rx="7" fill="#eef2ff" stroke="#6366f1"/>
+            <text x="22" y="49" fill="#312e81" font-size="11.5" font-weight="800">Explain Feature Impact? (Vertex Explainable AI)</text>
+            <text x="22" y="65" fill="#1e293b" font-size="11">• Tabular / Trees / XGBoost ──► Sampled Shapley (Q#88,227,275)</text>
+            <text x="22" y="80" fill="#1e293b" font-size="11">• Image / DNN Pixels ────────► Integrated Gradients (Q#206)</text>
+            <text x="22" y="94" fill="#64748b" font-size="10.5">• Image Regions ─────────────► XRAI</text>
+
+            <rect x="12" y="108" width="416" height="132" rx="7" fill="#f0fdf4" stroke="#16a34a"/>
+            <text x="22" y="125" fill="#14532d" font-size="11.5" font-weight="800">Monitor Live Endpoint? (⚠ Never enable Req-Resp Log too! Q#318)</text>
+            <text x="22" y="143" fill="#1e293b" font-size="11">• Importance/interactions shifted? ► Attribution Drift (rate=0.1) (Q#291,318)</text>
+            <text x="22" y="160" fill="#1e293b" font-size="11">• Real-world rules shifted?       ► Concept Drift → Retrain (Q#174,223,317)</text>
+            <text x="22" y="179" fill="#0c4a6e" font-size="11" font-weight="700">• Input feature values shifted?</text>
+            <text x="34" y="197" fill="#166534" font-size="11" font-weight="700">├─ Training data AVAILABLE ───► Training-Serving Skew (Q#173,325)</text>
+            <text x="34" y="215" fill="#92400e" font-size="11" font-weight="700">└─ Training data UNAVAILABLE ─► Feature / Data Drift (Q#188,227)</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Hard GCP Platform Limits & June 2026 Exam Guide Card -->
+      <article class="card searchable-block" id="sec-limits">
+        <div class="card-head">
+          <h3>Hard GCP Platform Quotas / Traps &amp; June 2026 Exam Guide Updates (Grounded Notebook Truth)</h3>
+          <span class="weight-pill">Must-Memorize Exam Traps</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 28%;">Platform Limit / June 2026 Topic</th>
+                  <th>Official Google Cloud Documentation Rule (Eliminates Trap Distractors!)</th>
+                  <th style="width: 115px;">Bank Q#</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="searchable-row">
+                  <td><strong>Valid N1 GPU Counts (`1, 2, 4, 8` ONLY)</strong></td>
+                  <td>Compute Engine / Vertex AI N1 VMs support <strong>only <code>1, 2, 4, or 8</code> GPUs</strong>—<strong><code>3 GPUs</code> is an invalid hardware configuration</strong> that fails API validation! Fix image pipeline slowdowns by scaling host CPUs (<code>24 vCPUs + 1 V100</code>) to eliminate CPU preprocessing starvation.</td>
+                  <td><span class="q-pill">Q#338</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>AutoML Tabular Hard Minimum (`&ge; 1,000 rows`)</strong></td>
+                  <td>Vertex AI AutoML Tabular &amp; Forecasting enforce a hard validation minimum of <strong>1,000 rows</strong>. Datasets with <code>365</code> daily rows fail validation—use <strong>BigQuery ML Regression</strong> instead.</td>
+                  <td><span class="q-pill">Q#207</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Model Monitoring vs. Request-Response Logging Conflict</strong></td>
+                  <td><strong>Request-response logging CANNOT be enabled on an endpoint that already has Model Monitoring enabled</strong> (Model Monitoring already logs sampled payloads to BigQuery). Route <code>model_monitoring_anomaly</code> alerts via <strong>Cloud Logging</strong> and view attributions in the <strong>Vertex AI Console</strong>.</td>
+                  <td><span class="q-pill">Q#318</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>AutoML <code>Time column</code> Split Limitation</strong></td>
+                  <td>AutoML's built-in <code>Time column</code> accepts <strong>only 1 timestamp column</strong> and makes contiguous 80/10/10 cuts with <strong>zero buffer gap</strong>. When multiple columns carry time signals and labels look 20 days ahead, perform a <strong>manual split with a 30-day gap</strong>.</td>
+                  <td><span class="q-pill">Q#18</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Private vs. Public Endpoint Network Latency</strong></td>
+                  <td>Official Vertex AI <code>choose-endpoint-type</code> docs classify <strong>Private Endpoints (VPC Peering)</strong> as <em>Optimized</em> network latency and Public Endpoints as <em>Unoptimized</em>—making regional Private Endpoints the winner for global banking latency.</td>
+                  <td><span class="q-pill">Q#277</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>June 2026 Exam Guide Naming &amp; GenAI Additions</strong></td>
+                  <td><strong>Gemini Enterprise Agent Platform</strong> = new exam brand name for Vertex AI (Pipelines, Serverless Training, Ray, Model Registry, Monitoring). Know <strong>Model Armor</strong> (inline prompt injection/PII defense), <strong>DeepSeek-V3.2 MaaS</strong> via OpenAI SDK <code>base_url</code>, <strong>Explicit vs. Implicit Context Caching</strong>, and <strong>Cloud TPU v5p (95 GiB HBM) FSDP sharding</strong>.</td>
+                  <td><span class="q-pill">Q#342</span> <span class="q-pill">Q#345</span> <span class="q-pill">Q#355</span> <span class="q-pill">Q#366</span> <span class="q-pill">Q#375</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- ==================== 1. PRIORITY 1 MATRICES ==================== -->
+      <div class="section-banner">
+        <h2>1. Decision Matrix for Your 3 "Does Not Meet" Sections (51% of Exam)</h2>
+      </div>
+
+      <!-- Section 4 -->
+      <article class="card searchable-block" id="sec-4">
+        <div class="card-head">
+          <h3>Section 4: Serving &amp; Scaling Models</h3>
+          <span class="weight-pill">Priority 1 • 20% Exam Weight</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 28%;">Scenario / Constraint</th>
+                  <th>Google-Recommended Grounded Architecture</th>
+                  <th style="width: 120px;">Key Bank Q#</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="searchable-row">
+                  <td><strong>Sub-100ms real-time feature lookup</strong> (e.g., checkout coupons, banner ads)</td>
+                  <td><strong>Never query BigQuery inline</strong> (OLAP latency is 100s of ms to seconds). Serve features from <strong>Cloud Bigtable</strong>, <strong>Memorystore (Redis)</strong>, or <strong>Vertex AI Feature Store (Online Serving)</strong> behind <strong>App Engine / Cloud Run</strong> + <strong>Vertex AI Endpoints</strong>.</td>
+                  <td><span class="q-pill">Q#80</span> <span class="q-pill">Q#163</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Sub-50ms streaming Dataflow pipeline</strong> vs. <strong>Offline mobile/edge</strong></td>
+                  <td><strong>Inside Dataflow streaming:</strong> Export BQML model as TensorFlow <code>SavedModel</code> and run in-memory via <strong><code>tfx_bsl.public.beam.RunInference</code></strong> (~1 ms, <code>Q#138</code>). <strong>On mobile/edge devices:</strong> Convert to <strong>TFLite</strong> / Coral Edge TPU.</td>
+                  <td><span class="q-pill">Q#138</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Multi-week propensity / daily recommendations</strong> with data already in BigQuery</td>
+                  <td>Import model into <strong>BigQuery ML</strong> for scheduled <strong>batch inference</strong>, export precomputed scores to <strong>Cloud SQL / Memorystore</strong>, and serve via low-latency point lookups.</td>
+                  <td><span class="q-pill">Q#105</span> <span class="q-pill">Q#339</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Cross-region low-latency enterprise/banking serving</strong> (<code>us-central1</code> + <code>asia-southeast1</code>)</td>
+                  <td>Deploy to regional <strong>Vertex AI Private Endpoints (VPC Network Peering)</strong> in both <code>us-central1</code> and <code>asia-southeast1</code> (Google's <em>Optimized</em> latency tier; Public Endpoints are <em>Unoptimized</em>).</td>
+                  <td><span class="q-pill">Q#277</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Low-traffic canary version (`10%` of `20 req/hr` = `2 req/hr`)</strong></td>
+                  <td>Configure <strong>manual scaling with <code>1</code> warm node</strong> so the canary never scales down to zero between sparse requests (eliminating cold-start latency spikes).</td>
+                  <td><span class="q-pill">Q#164</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Deploying open-weight LLMs (Gemma / Llama)</strong> with <strong>full granular infrastructure control</strong></td>
+                  <td>Manually deploy on <strong>GKE using a custom YAML manifest</strong> (choose Model Garden 1-click deployment only when <em>minimal operational overhead</em> is requested).</td>
+                  <td><span class="q-pill">Q#319</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Reducing SavedModel CPU/GPU serving latency</strong> with minimal accuracy loss</td>
+                  <td>Apply <strong>post-training quantization</strong> to reduce floating-point precision from <code>tf.float32</code>/<code>float64</code> to <strong><code>tf.float16</code></strong> (or <code>int8</code>).</td>
+                  <td><span class="q-pill">Q#145</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Semantic search over metadata/documents</strong> or <strong>inline explicit-image blocking</strong></td>
+                  <td>Semantic search &rarr; <strong>Vertex AI Agent Builder (Search)</strong> (<code>Q#303</code>). Synchronous upload blocking &rarr; <strong>AutoML Vision on inline Vertex AI Endpoint</strong> (<code>Q#307</code>).</td>
+                  <td><span class="q-pill">Q#303</span> <span class="q-pill">Q#307</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- Section 5 -->
+      <article class="card searchable-block" id="sec-5">
+        <div class="card-head">
+          <h3>Section 5: Automating &amp; Orchestrating ML Pipelines</h3>
+          <span class="weight-pill">Priority 1 • 18% Exam Weight</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 28%;">Scenario / Constraint</th>
+                  <th>Google-Recommended Grounded Architecture</th>
+                  <th style="width: 120px;">Key Bank Q#</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="searchable-row">
+                  <td><strong>Preventing training-serving skew in BigQuery ML</strong></td>
+                  <td>Put all feature preprocessing inside the <strong><code>TRANSFORM(...)</code> clause</strong> of <code>CREATE MODEL</code> so transformations are embedded in the model artifact and applied automatically at inference.</td>
+                  <td><span class="q-pill">Q#289</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Hundreds of millions of rows + scale numericals &amp; encode text</strong> for multi-epoch custom TF</td>
+                  <td>Run <strong>TFX (<code>tf.Transform</code>) on Apache Beam / Cloud Dataflow</strong> to compute full-pass scaling/vocab once, materialize sharded <strong><code>TFRecord</code> files in Cloud Storage</strong>, and bake <code>transform_fn</code> into the <code>SavedModel</code>.</td>
+                  <td><span class="q-pill">Q#132</span> <span class="q-pill">Q#211</span> <span class="q-pill">Q#263</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Custom image pipeline slow on <code>n1-standard-8 + 1 V100</code></strong> without losing accuracy</td>
+                  <td>Update <code>WorkerPoolSpec</code> to <strong><code>24 vCPUs + 1 V100 GPU</code></strong> to eliminate CPU image-preprocessing starvation of the GPU (<code>3 V100 GPUs</code> is an invalid GCP hardware count!).</td>
+                  <td><span class="q-pill">Q#338</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Single-node <code>pandas</code> preprocessing hits Out-of-Memory (OOM)</strong></td>
+                  <td>Use the SDK to create a <strong>Ray on Agent Platform (Vertex AI) cluster</strong>, rewrite the script using <strong>Ray Data</strong> for distributed processing, and submit the job to the cluster.</td>
+                  <td><span class="q-pill">Q#342</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Automatic artifact &amp; lineage tracking</strong> with minimal custom code</td>
+                  <td>Use <strong>Vertex AI Pipelines + Vertex AI SDK</strong> (lineage is logged automatically to Vertex ML Metadata without error-prone manual tracking code).</td>
+                  <td><span class="q-pill">Q#305</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Selective KFP v2 component caching</strong> (<code>export</code> &amp; <code>preprocess</code> cached, <code>train</code> &amp; <code>calibrate</code> re-run)</td>
+                  <td>Keep static YAML filenames (<code>export.yaml</code>, <code>preprocess.yaml</code>) for cached steps and dynamic timestamped filenames (<code>f"train-{dt}.yaml"</code>, <code>f"calibrate-{dt}.yaml"</code>) for steps that must re-execute.</td>
+                  <td><span class="q-pill">Q#201</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Monthly ground-truth labels (flu wave)</strong> or <strong>30-day retrain + daily batch predict</strong></td>
+                  <td>Match retraining cadence to label arrival via <strong>Cloud Scheduler + batch Vertex AI Pipeline</strong> (never 24/7 online endpoints for monthly batch, <code>Q#223</code>); decouple 30-day CT and daily batch predict into <strong>2 separate pipelines</strong> (<code>Q#343</code>).</td>
+                  <td><span class="q-pill">Q#223</span> <span class="q-pill">Q#343</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Side-by-side LLM evaluation</strong> over batch JSONL outputs in Cloud Storage</td>
+                  <td>Run Vertex AI's managed <strong>AutoSxS (<code>autosxs_pipeline</code>)</strong> in Vertex AI Pipelines—it natively ingests pre-computed GCS JSONL predictions and logs lineage to Vertex ML Metadata.</td>
+                  <td><span class="q-pill">Q#299</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- Section 1 -->
+      <article class="card searchable-block" id="sec-1">
+        <div class="card-head">
+          <h3>Section 1: Architecting Low-Code AI Solutions</h3>
+          <span class="weight-pill">Priority 1 • 13% Exam Weight</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 28%;">Scenario / Constraint</th>
+                  <th>Google-Recommended Grounded Low-Code Choice</th>
+                  <th style="width: 135px;">Key Bank Q#</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="searchable-row">
+                  <td><strong>Zero labeled failure data yet</strong> (anomaly/incident telemetry)</td>
+                  <td><strong>Rules of ML Rule #1:</strong> Deploy &amp; evaluate a <strong>simple statistical heuristic (z-score)</strong> in live production first while collecting verified labels—never train ML on synthetic heuristic labels!</td>
+                  <td><span class="q-pill">Q#94</span> <span class="q-pill">Q#139</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Small tabular dataset (`&lt; 1,000 rows`, e.g., `365` hospital rows)</strong></td>
+                  <td><strong>BigQuery ML Regression</strong> (Vertex AI AutoML Tabular/Forecasting strictly requires <strong>&ge; 1,000 rows</strong> and rejects 365-row datasets).</td>
+                  <td><span class="q-pill">Q#207</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>General object detection</strong> vs. <strong>Scanned PDF custom fields</strong> vs. <strong>Recipe entities</strong></td>
+                  <td>Common objects &rarr; <strong>Cloud Vision API</strong> (<code>Q#286</code>). Custom form box &rarr; <strong>Document AI Custom Extractor</strong> (<code>Q#200</code>). Custom text spans &rarr; <strong>Vertex AI Text Entity Extraction</strong> (<code>Q#265</code>).</td>
+                  <td><span class="q-pill">Q#200</span> <span class="q-pill">Q#265</span> <span class="q-pill">Q#286</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Tabular customer churn probability with built-in feature importance</strong></td>
+                  <td><strong>Random Forest classification model</strong> (churn is binary classification outputting probabilities, not regression).</td>
+                  <td><span class="q-pill">Q#264</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>AutoML Tabular splits:</strong> Multi-column time lookahead vs. Unseen new stores</td>
+                  <td>Multiple time columns + 20-day LTV window &rarr; <strong>Manual split with 30-day gap</strong> (<code>Q#18</code>). Predicting for unseen new retail stores &rarr; <strong>Manual group split by <code>store name</code></strong> (<code>Q#184</code>).</td>
+                  <td><span class="q-pill">Q#18</span> <span class="q-pill">Q#184</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Fine-tuning an LLM on author styles</strong> + hosting on a <strong>custom VM</strong></td>
+                  <td>Fine-tune <strong>Llama (Model Garden)</strong> via Vertex AI Pipelines / Agent Platform Serverless Training (Gemini cannot be self-hosted on a custom VM; BERT is encoder-only and cannot generate text).</td>
+                  <td><span class="q-pill">Q#327</span> <span class="q-pill">Q#351</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Teaching an LLM a private internal language (<code>MechScript</code>)</strong> or <strong>aligning verbosity</strong></td>
+                  <td>Collect curated prompt-response / Q&amp;A examples and run <strong>Supervised Fine-Tuning (SFT)</strong> in Agent Platform (Vertex AI).</td>
+                  <td><span class="q-pill">Q#329</span> <span class="q-pill">Q#341</span> <span class="q-pill">Q#373</span></td>
+                </tr>
+                <tr class="searchable-row">
+                  <td><strong>Sanitizing LLM prompts and responses</strong> against prompt injection &amp; PII leaks</td>
+                  <td>Configure <strong>Model Armor</strong> inline to sanitize requests and responses.</td>
+                  <td><span class="q-pill">Q#371</span> <span class="q-pill">Q#375</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- ==================== 2. ALL 65 GROUNDED OVERRIDES & CURATED NOTES ==================== -->
+      <div class="section-banner" id="part-a">
+        <h2>2. All 65 Grounded Notebook Overrides (42) &amp; High-Yield Curated Notes</h2>
+      </div>
+
+      <!-- Interactive Section & Override Filter Bar -->
+      <div class="override-toolbar" role="region" aria-label="Filter Counter-Notes">
+        <button class="sec-btn active" data-sec="all" type="button">All (65)</button>
+        <button class="sec-btn" data-sec="override" type="button">&#128211; All NB Overrides (42)</button>
+        <button class="sec-btn" data-sec="nbgem" type="button">&#9889; NB &ne; Gemini (23)</button>
+        <button class="sec-btn" data-sec="nbcomm" type="button">&#128101; NB &ne; Vote (32)</button>
+        <button class="sec-btn" data-sec="multi" type="button">Multi-Select (5)</button>
+        <button class="sec-btn" data-sec="Sec 1" type="button">Sec 1</button>
+        <button class="sec-btn" data-sec="Sec 2" type="button">Sec 2</button>
+        <button class="sec-btn" data-sec="Sec 3" type="button">Sec 3</button>
+        <button class="sec-btn" data-sec="Sec 4" type="button">Sec 4</button>
+        <button class="sec-btn" data-sec="Sec 5" type="button">Sec 5</button>
+        <button class="sec-btn" data-sec="Sec 6" type="button">Sec 6</button>
+        <span id="overrideCount" class="override-count">Showing 65 of 65 notes</span>
+      </div>
+
+      <!-- Part A Table -->
+      <article class="card">
+        <div class="card-head">
+          <h3>Part A: Questions 1–199 (28 Grounded Overrides &amp; Multi-Selects)</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 68px;">Q#</th>
+                  <th style="width: 72px;">Sec</th>
+                  <th style="width: 92px;">Notebook</th>
+                  <th style="width: 82px;">Gemini</th>
+                  <th style="width: 86px;">Vote</th>
+                  <th>Grounded Exam Rule &amp; Authoritative Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#10</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>Sparse categorical cross-entropy (<code>D</code>)</strong>: Mutually exclusive multi-class labels mapped to integers (<code>0, 1, 2</code>) require <code>SparseCategoricalCrossentropy</code> (<code>CategoricalCrossentropy</code> expects one-hot vectors). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course &amp; Google ML Glossary (Multi-Class Classification &amp; Sparse Categorical Cross-Entropy)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#18</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Manual Split + 30-Day Gap (<code>D</code>)</strong>: AutoML Tables' <code>Time column</code> accepts only 1 timestamp and leaves 0 buffer gap (leaking the 20-day LTV lookahead window); manually split across your multiple time-signal columns with a 30-day gap (<code>30 &gt; 20</code>). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (AutoML Tables / Vertex AI Tabular Data Splits &amp; Target Leakage) &amp; PMLE Study Guide §1.1, §6.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="true">
+                  <td><span class="q-pill">Q#28</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">A, D</span></td>
+                  <td><span class="ans-raw-same">A, D</span></td>
+                  <td><span class="ans-raw-same">A, D</span></td>
+                  <td><strong>(Choose two) TPU Input-Bound Pipeline (<code>A, D</code>)</strong>: Use <code>Dataset.interleave</code> (<code>A</code>) for parallel file reads and <code>Dataset.prefetch</code> (<code>D</code>) to overlap host CPU preprocessing with TPU step execution. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Cloud TPU Performance Guide &amp; `tf.data` Optimization) &amp; PMLE Study Guide §3.2, §3.3</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="true">
+                  <td><span class="q-pill">Q#40</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C, E</span></td>
+                  <td><span class="ans-raw-same">C, E</span></td>
+                  <td><span class="ans-raw-same">C, E</span></td>
+                  <td><strong>(Choose two) Faster Hyperparameter Tuning (<code>C, E</code>)</strong>: Set <code>enableTrialEarlyStopping: TRUE</code> (<code>C</code>) and run iterative tuning rounds with narrowed search ranges and fewer trials (<code>E</code>). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (AI Platform / Vertex AI Hyperparameter Tuning: `enableTrialEarlyStopping` &amp; `maxTrials`) &amp; PMLE Study Guide §3.2</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 2" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#48</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>Target Leakage Removal (<code>C</code>)</strong>: Achieving <code>0.99</code> training AUC ROC immediately on untuned baseline algorithms indicates target leakage—remove features highly correlated with or derived from post-outcome target events (nested CV <code>B</code> will not fix leaked columns). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Tabular / AutoML Tables Target Leakage &amp; Correlation Analysis) &amp; PMLE Study Guide §6.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#69</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>Policy Violation Recall (<code>A</code>)</strong>: Framing 'non-compliant photo' as Positive means falsely accepting a bad photo is a <strong>False Negative</strong>—train AutoML Vision and optimize/threshold to minimize False Negatives (maximize Recall). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course (Precision and Recall) &amp; Google Cloud AI/ML Docs (Vertex AI AutoML Image)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#80</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>300ms Real-Time Banner Architecture (<code>C</code>)</strong>: <strong>App Engine</strong> (API gateway) + <strong>Cloud Bigtable</strong> (single-digit ms real-time user navigation store) + <strong>AI Platform / Vertex AI Prediction</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Real-Time Serving Architecture &amp; Cloud Bigtable) &amp; PMLE Study Guide v2.0 §4.2</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#85</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Unbiased Moderation Recall Sampling (<code>C</code>)</strong>: Recall (<code>TP / (TP + FN)</code>) cannot be measured solely from model-flagged comments (<code>D</code>) because unflagged <code>FN</code>s are never seen! Route an unbiased <code>0.1%</code> random sample of raw comments to human moderators. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course (Precision and Recall) &amp; PMLE Study Guide v2.0 §6.2</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#90</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">A</span></td>
+                  <td><span class="ans-raw-diff">A</span></td>
+                  <td><strong>Skewed Binary Dataset Metric (<code>C</code>)</strong>: On a 96%-negative / 4%-positive dataset with no stated asymmetric cost between FP and FN, use <strong>F1 score (<code>C</code>)</strong> (harmonic mean of precision &amp; recall) rather than raw accuracy or arbitrary recall weighting. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course (Precision, Recall, and F1) &amp; Google ML Glossary</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#94</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Rules of ML Rule #1 — Heuristic First (<code>C</code>)</strong>: With zero historical failure labels, launch &amp; evaluate a simple statistical heuristic (z-score spikes) in live production first while collecting real ground-truth incident labels—never train supervised ML on synthetic z-score labels (<code>B</code>). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course / Rules of ML (Rule #1 &amp; Rule #3) &amp; PMLE Study Guide v2.0 §3.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#96</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Distributed Training Code Refactoring (<code>D</code>)</strong>: Scaling 3M large X-ray images beyond 1 legacy P100 GPU requires refactoring training code with <code>tf.distribute.Strategy</code> (<code>D</code>); merely changing job config to a TPU <code>v3-32</code> (<code>B</code>) without <code>TPUStrategy</code> code fails. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Distributed Training &amp; tf.distribute) &amp; PMLE Study Guide v2.0 §3.2, §3.3</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#99</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Seasonal Model Comparison (<code>B</code>)</strong>: Register seasonal model versions in <strong>Vertex AI Model Registry</strong> and compare evaluation slices side-by-side in the <strong>Evaluate tab</strong> (Vertex ML Metadata <code>Events</code> <code>D</code> are artifact-execution graph edges, not seasonal slices). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Model Registry Versioning &amp; Evaluation) &amp; PMLE Exam Guide §4.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#104</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>Cross-Language Fairness via MinDiff (<code>A</code>)</strong>: TensorFlow <strong>MinDiff</strong> adds an auxiliary fairness loss penalty during training to equalize FPR/FNR across message source languages without adding runtime translation latency to serving. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course (Fairness: MinDiff / TensorFlow Model Remediation) &amp; PMLE Study Guide v2.0 §6.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#105</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>2-Week Game Purchase Propensity (<code>A</code>)</strong>: Import the TensorFlow model into <strong>BigQuery ML</strong> for scheduled batch prediction over warehouse data and serve precomputed scores from <strong>Cloud SQL</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (BigQuery ML TensorFlow Import &amp; Batch Serving) &amp; PMLE Study Guide v2.0 §1.1, §4.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 2" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#113</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Zero-Pipeline Real-Time BigQuery Ingestion (<code>A</code>)</strong>: Configure a direct <strong>Pub/Sub BigQuery subscription</strong> to stream events straight into BigQuery for downstream ELT/ML without intermediate Dataflow/Spark jobs. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 §2.1 &amp; Google Cloud AI/ML Docs (Pub/Sub BigQuery Subscriptions)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 2" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#116</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><strong>20 GB DL Model + Custom C++ Ops Hardware (<code>B</code>)</strong>: Use <strong><code>a2-megagpu-16g</code></strong> (16&times;A100 = 640 GB GPU VRAM + 96 host vCPUs / 1.36 TB RAM so TensorFlow places custom C++ ops on host CPUs while accelerating the 20 GB DL graph on GPUs; CPU-only <code>n1-highcpu-96</code> <code>D</code> has only 86 GB RAM and stalls/OOMs). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 §3.3 &amp; Google Cloud AI/ML Docs (Cloud TPU/GPU Selection Guide: When to use CPUs, GPUs, and TPUs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#132</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Repeated Multi-Model Training I/O (<code>C</code>)</strong>: Convert hundreds of millions of cleaned BigQuery rows once into sharded binary <strong><code>TFRecord</code> files in Cloud Storage</strong> (<code>tf.data.TFRecordDataset</code>) instead of re-scanning BigQuery per epoch over gRPC (<code>D</code>). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 §3.2 (Course 07 Module 2 &amp; Course 08 Module 3) &amp; Google Cloud AI/ML Docs (Vertex AI TensorFlow Input Pipelines)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#138</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><strong>Sub-50ms Streaming Dataflow Inference (<code>B</code>)</strong>: Export the BigQuery ML logistic regression model as a TensorFlow <code>SavedModel</code> and run it in-memory inside the existing Dataflow pipeline via <strong><code>tfx_bsl.public.beam.RunInference</code></strong> (~1 ms latency). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 §1.1 &amp; §4.1 &amp; Google Cloud AI/ML Docs (BigQuery ML Model Export &amp; Dataflow RunInference)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#139</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>Rules of ML Rule #1 — Unlabeled Incident Detection (<code>B</code>)</strong>: Just like Q#94, when telemetry lacks historical failure labels, deploy a simple statistical z-score heuristic first to detect anomalies and collect verified labels before training ML. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course / Rules of Machine Learning (Rule #1) &amp; PMLE Study Guide v2.0 §3.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#140</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">A</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Quasi-Identifier Coarsening for ML Signal (<code>C</code>)</strong>: Bucketize <code>AGE</code> into quantiles, round <code>LATITUDE_LONGITUDE</code> to single precision, and keep boolean/<code>SHIRT_SIZE</code> to achieve <em>k</em>-anonymity while preserving ordinal age and spatial proximity signal (hashing <code>A</code> destroys numerical/spatial distance). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 §2.1 &amp; p.32 Glossary (Bucketing &amp; De-identification) &amp; Google Cloud Sensitive Data Protection Docs</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#141</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>Imbalanced Churn Evaluation (<code>C</code>)</strong>: On a 90% renew / 10% cancel dataset, achieving <strong>99% recall on the 10% minority cancellation class</strong> (and 82% on renewals = 90.5% balanced accuracy) is strong production performance. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course (Classification: Accuracy &amp; Class-Imbalanced Datasets) &amp; Google ML Glossary</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#146</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>EDA at Hundreds-of-Millions Scale (<code>D</code>)</strong>: Compute descriptive statistics in <strong>BigQuery</strong>, plot time-series pushdown charts in <strong>Looker Studio (Data Studio)</strong>, and pull only aggregated/sampled slices into Workbench for complex hypothesis tests. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 §2.1 &amp; §2.2 &amp; Google Cloud AI/ML Docs (BigQuery + Looker Studio + Vertex AI Workbench)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="true">
+                  <td><span class="q-pill">Q#149</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">B, D</span></td>
+                  <td><span class="ans-raw-same">B, D</span></td>
+                  <td><span class="ans-raw-same">B, D</span></td>
+                  <td><strong>(Choose two) Subgroup Imbalance Mitigation (<code>B, D</code>)</strong>: When new data cannot be collected, apply <strong>higher loss weights to underrepresented subgroup errors (<code>B</code>)</strong> and <strong>resample the dataset (<code>D</code>)</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE June 2026 Exam Guide §6.1 &amp; Google ML Crash Course (Fairness &amp; Imbalanced Datasets)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#163</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Sub-100ms Web App Feature Lookup (<code>B</code>)</strong>: Replace synchronous <strong>BigQuery</strong> OLAP queries at checkout with a <strong>low-latency NoSQL store</strong> (Cloud Bigtable / Memorystore / Feature Store Online). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE June 2026 Exam Guide §4.2 &amp; PMLE Study Guide v2.0 §4.2 (Online Serving &amp; Feature Store / Bigtable)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#164</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>Low-Traffic Canary Cold-Start Fix (<code>B</code>)</strong>: <code>10%</code> of <code>20 req/hr</code> = <code>2 req/hr</code> (~1 request every 30 min), causing autoscaling to scale down to 0 and hit cold starts; configure <strong>manual scaling with 1 warm node (<code>B</code>)</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 §4.2 &amp; Google Cloud AI/ML Docs (Online Prediction Autoscaling vs. Manual Scaling / Cold Starts)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="true">
+                  <td><span class="q-pill">Q#169</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">B, C</span></td>
+                  <td><span class="ans-raw-same">B, C</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>(Choose two) Reducing Fraud False Negatives (<code>B, C</code>)</strong>: <strong>Lower the classification score threshold (<code>B</code>)</strong> to increase recall and <strong>add more positive fraud examples (<code>C</code>)</strong> to the training set. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course (Classification: Thresholding, Precision &amp; Recall, Imbalanced Data) &amp; Google ML Glossary</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#184</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>Predicting Sales for Unseen New Stores (<code>A</code>)</strong>: Per Vertex AI Tabular Data Splits docs, manually group-split by <strong><code>store name</code></strong> so distinct stores sit in Train/Val/Test—measuring true generalization to unseen store locations. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Tabular Data Splits: Manual Group Split for Unseen Stores)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#198</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-diff">A</span></td>
+                  <td><span class="ans-raw-diff">A</span></td>
+                  <td><strong>Single-Node Multi-GPU Distributed Spec (<code>D</code>)</strong>: Configure a single worker pool (<code>workerPoolSpecs[0]</code>) of multi-GPU Compute Engine <strong>A2 (A100)</strong> VMs with <code>tf.distribute.MirroredStrategy</code> (Option <code>A</code> leaves the primary pool <code>workerPoolSpecs[0]</code> without GPUs!). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Distributed Training Worker Pools &amp; TensorFlow MirroredStrategy)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- Part B Table -->
+      <article class="card" id="part-b">
+        <div class="card-head">
+          <h3>Part B: Questions 200–375 (37 Grounded Overrides &amp; Modern GenAI/HPC Notes)</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 68px;">Q#</th>
+                  <th style="width: 72px;">Sec</th>
+                  <th style="width: 92px;">Notebook</th>
+                  <th style="width: 82px;">Gemini</th>
+                  <th style="width: 86px;">Vote</th>
+                  <th>Grounded Exam Rule &amp; Authoritative Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#200</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-diff">A</span></td>
+                  <td><strong>Scanned PDF Handwritten Feedback Extraction (<code>C</code>)</strong>: Uptrain/fine-tune a <strong>Document AI Custom Extractor</strong> to isolate only the specific <code>comments</code> field before sentiment analysis. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Document AI Custom Extractor &amp; Cloud Natural Language API Sentiment Analysis)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#202</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Lift-and-Shift On-Premises PySpark (<code>C</code>)</strong>: Migrate to <strong>Cloud Dataproc</strong> (managed Apache Spark + Jupyter Component Gateway in &lt;90 seconds). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Cloud Dataproc &amp; Vertex AI Workbench Dataproc Integration) &amp; PMLE Study Guide v2.0 §2</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#207</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Hard GCP Limit — AutoML 1,000-Row Minimum (<code>A</code>)</strong>: Vertex AI AutoML Tabular/Forecasting strictly requires <strong>&ge; 1,000 rows</strong> (<code>365</code> daily hospital rows fail validation!); train a <strong>BigQuery ML Regression model (<code>A</code>)</strong> in SQL. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI AutoML Tabular 1,000-Row Minimum Quota &amp; BigQuery ML Regression)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 6" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#222</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Monitoring 2 Models Behind 1 Endpoint (<code>B</code>)</strong>: Deploy both models to a <strong>single Vertex AI Endpoint</strong> with traffic split and pass one <code>--monitoring-config-from-file</code> configuration. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Model Monitoring — Configure Multiple Models with monitoring-config-from-file) &amp; PMLE Study Guide v2.0 Sec 6.2</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#223</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Monthly Flu Ground-Truth Retraining Cadence (<code>B</code>)</strong>: Because national flu target labels arrive monthly, schedule a <strong>monthly batch Vertex AI Pipeline via Cloud Scheduler (<code>B</code>)</strong> rather than running a 24/7 online endpoint (<code>D</code>). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 Sec 5.2 (Automating Model Retraining) &amp; Google Cloud AI/ML Docs (BigQuery ML Pricing vs. Vertex AI Endpoints)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 2" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#260</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>Step-Wise Loss Logging in Experiments (<code>C</code>)</strong>: Associate a <strong>Vertex AI TensorBoard</strong> instance with the Experiment, call <code>assign_input_artifact</code> for data lineage, and use <code>log_time_series_metrics</code> for step-wise loss (<code>log_metrics</code> is summary-only). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Experiments — Log Data to an Experiment Run: `log_time_series_metrics` &amp; `assign_input_artifacts`)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#263</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>TFX on Dataflow &rarr; Sharded TFRecords (<code>C</code>)</strong>: For multi-epoch custom TF training over hundreds of millions of rows, run <strong>TFX (<code>tf.Transform</code>) on Dataflow</strong> to compute full-pass scaling/vocab once, write sharded <code>TFRecord</code>s to GCS, and bake <code>transform_fn</code> into the <code>SavedModel</code>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 Course 06 Module 6 (Introduction to TensorFlow Transform) &amp; Google Cloud AI/ML Docs (Data Preprocessing for ML with tf.Transform)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#264</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Interpretable Tabular Churn Probability (<code>D</code>)</strong>: Train a <strong>Random Forest classification model</strong> (churn is binary classification outputting calibrated probabilities, with built-in feature importance). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 PMLE Study Guide v2.0 Sec 3.1 (Modeling Techniques Given Interpretability Requirements) &amp; Google ML Crash Course (Classification)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#265</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><strong>Custom Recipe Entity Extraction (<code>A</code>)</strong>: Create a <strong>Vertex AI Text Dataset for Entity Extraction</strong>, define <code>ingredient</code> and <code>measurement</code> entities, label spans, and train AutoML. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI AutoML Text Entity Extraction Dataset Preparation) &amp; PMLE Exam Guide Sec 1.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 6" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="true">
+                  <td><span class="q-pill">Q#269</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">D, E</span></td>
+                  <td><span class="ans-raw-same">D, E</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>(Choose two) Mitigating Demographic Bias (<code>D, E</code>)</strong>: Collect a <strong>stratified sample (<code>D</code>)</strong> for subgroup representation and run <strong>disaggregated fairness evaluations (<code>E</code>)</strong> across sensitive slices. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google ML Crash Course (Fairness: Identifying Bias &amp; Evaluating for Fairness) &amp; PMLE Study Guide v2.0 Sec 6.1</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#277</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Global Banking Optimized Endpoint Latency (<code>C</code>)</strong>: Per Vertex AI <code>choose-endpoint-type</code> docs, <strong>Vertex AI Private Endpoints (<code>C</code>, VPC Peering in <code>us-central1</code> + <code>asia-southeast1</code>)</strong> provide <em>Optimized</em> lower network latency + private isolation (Public Endpoints <code>D</code> are <em>Unoptimized</em>). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide, Sec 2.4) &amp; Source #5 (Google Cloud Docs: Vertex AI Choose an Endpoint Type &amp; Private Endpoints)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#286</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-diff">A</span></td>
+                  <td><strong>Zero-Training General Object Detection (<code>B</code>)</strong>: Use pre-trained <strong>Cloud Vision API</strong> for common objects (zero labeling/training cost); reserve AutoML Vision (<code>A</code>) for custom domain classes. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide, Sec 1.2) &amp; Source #2 (PMLE Study Guide v2.0, Sec 1.2 &amp; Glossary: Pre-trained APIs / Cloud Vision API)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#289</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><strong>Zero-Skew BigQuery ML Preprocessing (<code>B</code>)</strong>: Place <code>ML.QUANTILE_BUCKETIZE</code> and <code>ML.MIN_MAX_SCALER</code> inside the <strong><code>TRANSFORM(...)</code> clause</strong> of <code>CREATE MODEL</code>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Sec 3.1: BigQuery ML) &amp; Source #5 (Google Cloud Docs: BigQuery ML TRANSFORM Clause)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#290</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Conditional Hyperparameter Tree (<code>D</code>)</strong>: Run 1 hypertuning job (100 trials) with <strong>both <code>learning_rate</code> and <code>num_hidden_layers</code> conditioned</strong> under parent <code>training_method='dnn'</code>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Sec 3.3) &amp; Source #5 (Google Cloud Docs: Vertex AI Hyperparameter Tuning Conditional Hyperparameters)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 6" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#291</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Low-Cost Feature Interaction Monitoring (<code>D</code>)</strong>: Configure <strong>feature attribution drift monitoring with <code>sampling_rate=0.1</code></strong> on a weekly schedule. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Sec 6.2: Monitoring for Feature Attribution Drift) &amp; Source #5 (Google Cloud Docs: Vertex AI Monitor Feature Attributions)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#295</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><strong>Retail Sales Baseline Feature Engineering (<code>A</code>)</strong>: Linear regression baseline with one-hot encoded unordered categories (<code>store</code>, <code>category</code>) and cyclical calendar features (<code>day_of_week</code>, <code>month</code>). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #4 (Google ML Crash Course: Categorical &amp; Numerical Data Feature Engineering) &amp; Source #5 (Google Cloud Docs: BigQuery ML Preprocessing Functions)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#299</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>Managed Pairwise LLM Evaluation (<code>D</code>)</strong>: Vertex AI <strong>AutoSxS (<code>autosxs_pipeline</code>)</strong> natively ingests pre-computed JSONL batch inference outputs from Cloud Storage inside Vertex AI Pipelines with automatic ML Metadata lineage. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide, Sec 2.2: Evaluating Gen AI Solutions) &amp; Source #5 (Google Cloud Docs: Vertex AI AutoSxS Side-by-Side Evaluation)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 6" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#301</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><strong>Regulated Credit Explainability (<code>B</code>)</strong>: Use managed <strong>Vertex Explainable AI</strong> (Sampled Shapley / TreeSHAP / Integrated Gradients) for feature-based loan/credit explanations. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Sec 6.1: Model Explainability on Vertex AI) &amp; Source #5 (Google Cloud Docs: Vertex Explainable AI Overview)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#303</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Managed Enterprise Semantic + Metadata Search (<code>D</code>)</strong>: Use <strong>Vertex AI Agent Builder (Vertex AI Search)</strong> for out-of-the-box semantic search + metadata faceting with minimal engineering overhead. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide, Sec 1.2 &amp; 2.3) &amp; Source #5 (Google Cloud Docs: Vertex AI Agent Builder / Vertex AI Search for Media &amp; Structured Data)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#305</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><strong>Automatic Pipeline Lineage (<code>A</code>)</strong>: Standardize on <strong>Vertex AI Pipelines + Vertex AI SDK</strong> so artifacts, parameters, and lineage log automatically to Vertex ML Metadata. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Sec 5.2 &amp; 5.3: Model and Data Lineage) &amp; Source #5 (Google Cloud Docs: Vertex AI Pipelines &amp; Vertex ML Metadata)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#307</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Synchronous Explicit-Upload Blocking (<code>C</code>)</strong>: Train <strong>AutoML Vision</strong> and integrate its <strong>Vertex AI Endpoint synchronously inline</strong> with uploads (Option <code>D</code> as written only sends async moderator reports). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide, Sec 2.4) &amp; Source #2 (PMLE Study Guide v2.0, Sec 4.2: Online Serving &amp; MLOps)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 2" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#311</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>Real-Time Multi-User Notebooks + GPUs (<code>B</code>)</strong>: Use <strong>Colab Enterprise</strong> (serverless multi-user live collaboration + fast GPU attach; Workbench <code>C</code> is single-user). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Glossary p. 35: Colab Enterprise vs Vertex AI Workbench) &amp; Source #5 (Google Cloud Docs: Colab Enterprise Introduction)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 2" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#313</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Rapid Massive-Scale Spark Prototyping (<code>C</code>)</strong>: Spin up a <strong>Cloud Dataproc cluster with Spark + Jupyter component</strong> (~90s startup). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Glossary p. 35: Dataproc) &amp; Source #5 (Google Cloud Docs: Dataproc Jupyter Optional Component)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 6" data-override="true" data-nbgem="true" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#318</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><strong>Hard GCP Limit — Monitoring vs. Request-Response Logging (<code>A</code>)</strong>: Request-response logging <strong>CANNOT</strong> be enabled on an endpoint that already has Model Monitoring enabled (eliminating <code>C</code> &amp; <code>D</code>)! Alert on <code>model_monitoring_anomaly</code> in <strong>Cloud Logging</strong> and inspect attributions in the <strong>Vertex AI Console (<code>A</code>)</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Sec 6.2) &amp; Source #5 (Google Cloud Docs: Online Prediction Logging Limitations &amp; Using Vertex AI Model Monitoring)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#319</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-diff">B</span></td>
+                  <td><strong>Full Granular Gemma Infrastructure Control (<code>D</code>)</strong>: Deploy Gemma manually on <strong>GKE using a custom Kubernetes YAML manifest</strong> (Model Garden 1-click <code>B</code> abstracts away infra control). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide, Sec 2.4) &amp; Source #5 (Google Cloud Docs: Use Gemma on GKE &amp; Serve Gemma with vLLM/TensorRT-LLM YAML Manifests)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 2" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#320</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Deep Learning Visualization + Run Comparison (<code>C</code>)</strong>: Pair managed <strong>Vertex AI TensorBoard</strong> (time-series loss, graphs, embeddings) with <strong>Vertex AI Experiments</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide, Sec 2.1 &amp; 2.2) &amp; Source #5 (Google Cloud Docs: Vertex AI Experiments &amp; Vertex AI TensorBoard)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 6" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#325</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><strong>Post-Deployment Production AUC Drop (<code>A</code>)</strong>: Configure Vertex AI Model Monitoring for <strong>training-serving skew (<code>A</code>)</strong> against the training baseline. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #2 (PMLE Study Guide v2.0, Sec 6.2: Monitoring for Training-Serving Skew) &amp; Source #5 (Google Cloud Docs: Vertex AI Model Monitoring Skew and Drift)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#327</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Self-Hosted Style-Mimicking LLM (<code>C</code>)</strong>: Fine-tune open-weight <strong>Llama 3 (Model Garden)</strong> via Vertex AI Pipelines (Gemini <code>D</code> cannot be self-hosted on a custom VM; BERT <code>B</code> cannot generate text). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §3.2, §5.1) &amp; Source #5 (Google Cloud Vertex AI Model Garden Llama Tuning Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="true" data-nbgem="false" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#329</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-diff">C</span></td>
+                  <td><strong>Nuanced LLM Verbosity Alignment (<code>B</code>)</strong>: Collect curated Q&amp;A demonstration pairs with appropriate verbosity and run <strong>Supervised Fine-Tuning (SFT)</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §3.2) &amp; Source #5 (Google Cloud Generative AI Supervised Fine-Tuning Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 6" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#330</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Experiment Tracking + Dataset Versioning (<code>D</code>)</strong>: Use <strong>Vertex AI Experiments</strong> for run comparison and <strong>Vertex AI Managed Datasets (<code>DatasetVersion</code>)</strong> for dataset versioning. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §2.3) &amp; Source #5 (Google Cloud Vertex AI Experiments &amp; Managed Dataset Versioning Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="true" data-nbgem="true" data-nbcomm="true" data-multi="false">
+                  <td><span class="q-pill">Q#338</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><span class="ans-raw-diff">D</span></td>
+                  <td><strong>Hard GCP Limit — Invalid <code>3 V100 GPUs</code> &amp; CPU Starvation (<code>C</code>)</strong>: Upgrade from <code>n1-standard-8 + 1 V100</code> to <strong><code>24 vCPUs + 1 V100 GPU</code> (<code>C</code>)</strong> to eliminate CPU image-preprocessing starvation with zero accuracy loss. <strong>Option <code>D</code> (<code>3 V100 GPUs</code>) is an invalid GCP GPU count</strong> (N1 supports only <code>1, 2, 4, or 8</code> V100s!). <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Google Cloud AI/ML Docs (Vertex AI Custom Training Compute / GPUs) &amp; PMLE Study Guide §3.3</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#339</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Zero-Conversion TensorFlow Batch SQL Inference (<code>D</code>)</strong>: Import TensorFlow <code>SavedModel</code> directly from GCS into <strong>BigQuery ML</strong> via <code>CREATE MODEL ... OPTIONS(MODEL_TYPE='TENSORFLOW')</code>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §1.1, §4.1) &amp; Source #5 (Google Cloud BigQuery ML CREATE MODEL for Imported TensorFlow Models Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#341</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><strong>Unseen Private DSL (<code>MechScript</code>) Adaptation (<code>B</code>)</strong>: Run <strong>Agent Platform Supervised Fine-Tuning (SFT)</strong> on valid <code>MechScript</code> pairs so weights learn the private grammar without exhausting prompt tokens. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §1.2, §3.2) &amp; Source #5 (Google Cloud Agent Platform Supervised Fine-Tuning Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 5" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#342</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><span class="ans-raw-same">C</span></td>
+                  <td><strong>Distributed Fix for Single-Node <code>pandas</code> OOM (<code>C</code>)</strong>: Provision a <strong>Ray on Gemini Enterprise Agent Platform (Vertex AI) cluster</strong> and distribute transformations with <strong>Ray Data</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §2.1, §5.1: Ray on Gemini Enterprise Agent Platform) &amp; Source #5 (Google Cloud Ray on Vertex AI Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 3" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#344</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><span class="ans-raw-same">B</span></td>
+                  <td><strong>1-Trillion-Token Open Foundation LLM Pretraining (<code>B</code>)</strong>: Reserve <strong>B200 GPUs (<code>a4-highgpu-8g</code>)</strong> + <strong>Google Cloud Managed Lustre</strong> parallel POSIX storage + <strong>Slurm via Cluster Toolkit</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §3.2, §3.3) &amp; Source #5 (Google Cloud AI Hypercomputer, Cluster Toolkit Slurm &amp; Managed Lustre Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 1" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#351</span></td>
+                  <td><span class="sec-pill">Sec 1</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><span class="ans-raw-same">A</span></td>
+                  <td><strong>Serverless Open-Weight Style Fine-Tuning for Custom VM (<code>A</code>)</strong>: Fine-tune latest <strong>Llama (Model Garden)</strong> on <strong>Agent Platform Serverless Training</strong> and export weights to your custom VM. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §1.2, §3.2) &amp; Source #5 (Google Cloud Model Garden Open-Weights Tuning Docs)</span></td>
+                </tr>
+                <tr class="note-row" data-sec="Sec 4" data-override="false" data-nbgem="false" data-nbcomm="false" data-multi="false">
+                  <td><span class="q-pill">Q#373</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><span class="ans-raw-same">D</span></td>
+                  <td><strong>Gemini Verbosity Alignment in Agent Platform (<code>D</code>)</strong>: Collect Q&amp;A pairs demonstrating target verbosity per question type and run <strong>Supervised Fine-Tuning (SFT)</strong>. <span style="display:block; margin-top:3px; font-size:11px; color:var(--text-soft);">📚 Source #1 (PMLE June 2026 Exam Guide §1.2, §3.2) &amp; Source #5 (Google Cloud Agent Platform Gemini Supervised Fine-Tuning Docs)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <!-- ==================== 3. ALL 8 ARCHITECTURAL DIAGRAM QUESTIONS ==================== -->
+      <div class="section-banner" id="sec-diagrams">
+        <h2>3. All 8 Architectural Diagram Questions Quick-Reference</h2>
+      </div>
+
+      <!-- Visual Blueprint Cards -->
+      <div class="blueprint-grid searchable-block">
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#12 • Sec 4</span> <span class="ans-verified">Ans: C</span></div>
+          <div class="bp-flow">[1] AI Platform • [2] AI Platform • [3] NL API</div>
+          <div class="bp-desc">Custom models on AI Platform/Vertex AI for proprietary ticket priority &amp; resolution time; pre-trained <strong>Cloud Natural Language API</strong> for general sentiment.</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#22 • Sec 4</span> <span class="ans-verified">Ans: D</span></div>
+          <div class="bp-flow">shape: (-1, 2) &rarr; [['a','b'], ['c','d'], ['e','f']]</div>
+          <div class="bp-desc"><code>"signature_name": "serving_default"</code> (watch typo in A!) + rank-2 list of 2-element lists (<code>3&times;2</code>).</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#23 • Sec 2</span> <span class="ans-verified">Ans: A</span></div>
+          <div class="bp-flow">1M+ Files &rarr; [1] Dataflow (PII) &rarr; [2] BigQuery</div>
+          <div class="bp-desc">Regional ETL + PII redaction on 1M+ daily files uses <strong>Cloud Dataflow</strong>, landing into regional <strong>BigQuery</strong> for SQL &amp; BI.</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#53 • Sec 3</span> <span class="ans-verified">Ans: B</span></div>
+          <div class="bp-flow">Train:[A,D] | Test:[B] | Eval:[C]</div>
+          <div class="bp-desc"><strong>Group split by author</strong>. Never split texts from the same author across train/test/eval or the model memorizes identity (leakage).</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#126 • Sec 6</span> <span class="ans-verified">Ans: D</span></div>
+          <div class="bp-flow">High TPU Infeed % &rarr; interleave + map + prefetch</div>
+          <div class="bp-desc">TPU waiting on input: optimize <code>tf.data</code> with parallel reads (<code>interleave</code>), <code>num_parallel_calls</code>, and <code>prefetch</code>.</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#145 • Sec 4</span> <span class="ans-verified">Ans: B</span></div>
+          <div class="bp-flow">SavedModel float64/32 &rarr; Quantize to tf.float16</div>
+          <div class="bp-desc">Apply <strong>post-training quantization</strong> to <code>tf.float16</code> to halve memory bandwidth and speed up serving latency.</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#201 • Sec 5</span> <span class="ans-verified">Ans: A</span></div>
+          <div class="bp-flow">export.yaml (cached) | train-{dt}.yaml (re-run)</div>
+          <div class="bp-desc"><strong>KFP v2 Caching</strong>: Static filenames for cached steps; dynamic timestamped filenames for steps that must re-execute.</div>
+        </div>
+        <div class="bp-card">
+          <div class="bp-top"><span class="q-pill">Q#259 • Sec 5</span> <span class="ans-verified">Ans: C</span></div>
+          <div class="bp-flow">Cloud Run &rarr; Endpoint 1 &rarr; Endpoint 2</div>
+          <div class="bp-desc"><strong>Chained Multi-Model Inference</strong>: Host each independent model on its own <strong>Vertex AI Endpoint</strong> and orchestrate sequentially with <strong>Cloud Run</strong>.</div>
+        </div>
+      </div>
+
+      <!-- Full Quick-Reference Table -->
+      <article class="card searchable-block">
+        <div class="card-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 72px;">Q#</th>
+                  <th style="width: 82px;">Section</th>
+                  <th style="width: 90px;">Grounded</th>
+                  <th>Diagram Pattern &amp; Architectural Takeaway</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="q-pill">Q#12</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><code>1 = AI Platform, 2 = AI Platform, 3 = Cloud Natural Language API</code>. Use custom models on AI Platform/Vertex AI for proprietary ticket priority &amp; resolution time, and pre-trained <strong>Cloud Natural Language API</strong> for general sentiment analysis.</td>
+                </tr>
+                <tr>
+                  <td><span class="q-pill">Q#22</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><code>data = json.dumps({"signature_name": "serving_default", "instances": [['a', 'b'], ['c', 'd'], ['e', 'f']]})</code>. Input tensor shape <code>[None, 2]</code> (rank 2, inner dimension 2) requires a list of 2-element lists (<code>3&times;2</code>).</td>
+                </tr>
+                <tr>
+                  <td><span class="q-pill">Q#23</span></td>
+                  <td><span class="sec-pill">Sec 2</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><code>1 = Dataflow, 2 = BigQuery</code>. Regional ETL + PII redaction on 1M+ daily files uses <strong>Cloud Dataflow</strong>, landing into regional <strong>BigQuery</strong> for ANSI SQL analytics and BI dashboards.</td>
+                </tr>
+                <tr>
+                  <td><span class="q-pill">Q#53</span></td>
+                  <td><span class="sec-pill">Sec 3</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><strong>Group split by author (<code>Train: [TextA1, TextA2, TextD1, TextD2]</code>, <code>Test: [TextB1, TextB2]</code>, <code>Eval: [TextC1, TextC2]</code>)</strong>. Never put texts from the same author across train/test/eval when predicting author attributes, or the model memorizes author identity (data leakage).</td>
+                </tr>
+                <tr>
+                  <td><span class="q-pill">Q#126</span></td>
+                  <td><span class="sec-pill">Sec 6</span></td>
+                  <td><span class="ans-verified">D</span></td>
+                  <td><strong>TPU Profiler High Infeed % (<code>D</code>)</strong>: When the TPU spends most of its step time waiting on input (<code>infeed</code>), optimize <code>tf.data</code> with <strong>parallel reads (<code>interleave</code>), parallel processing (<code>num_parallel_calls</code>), and <code>prefetch</code></strong>.</td>
+                </tr>
+                <tr>
+                  <td><span class="q-pill">Q#145</span></td>
+                  <td><span class="sec-pill">Sec 4</span></td>
+                  <td><span class="ans-verified">B</span></td>
+                  <td><strong>SavedModel Graph Latency Optimization (<code>B</code>)</strong>: Apply <strong>post-training quantization</strong> reducing precision from <code>float64</code>/<code>float32</code> to <strong><code>tf.float16</code></strong> to halve memory bandwidth and speed up serving.</td>
+                </tr>
+                <tr>
+                  <td><span class="q-pill">Q#201</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">A</span></td>
+                  <td><strong>KFP v2 Pipeline Caching (<code>A</code>)</strong>: Use static filenames (<code>export.yaml</code>, <code>preprocess.yaml</code>) for steps that should hit cache, and dynamic timestamped filenames (<code>f"train-{dt}.yaml"</code>, <code>f"calibrate-{dt}.yaml"</code>) for steps that must re-run.</td>
+                </tr>
+                <tr>
+                  <td><span class="q-pill">Q#259</span></td>
+                  <td><span class="sec-pill">Sec 5</span></td>
+                  <td><span class="ans-verified">C</span></td>
+                  <td><strong>Chained Multi-Model Inference (<code>C</code>)</strong>: Host each model on its own <strong>Vertex AI Endpoint</strong> and use <strong>Cloud Run</strong> to orchestrate the sequential calls.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const htmlEl = document.documentElement;
+      const themeBtn = document.getElementById('themeBtn');
+      const globalSearch = document.getElementById('globalSearch');
+      const secBtns = document.querySelectorAll('.sec-btn');
+      const noteRows = document.querySelectorAll('.note-row');
+      const searchableRows = document.querySelectorAll('.searchable-row');
+      const overrideCount = document.getElementById('overrideCount');
+
+      let activeSecFilter = 'all';
+
+      function applyTheme(theme) {
+        htmlEl.setAttribute('data-theme', theme);
+        themeBtn.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+      }
+
+      try {
+        const saved = localStorage.getItem('pmle_study_theme');
+        if (saved === 'dark' || saved === 'light') applyTheme(saved);
+      } catch (_) {}
+
+      themeBtn.addEventListener('click', function () {
+        const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem('pmle_study_theme', next); } catch (_) {}
+      });
+
+      function filterAll() {
+        const q = (globalSearch.value || '').trim().toLowerCase();
+
+        searchableRows.forEach(function (row) {
+          row.hidden = Boolean(q && (row.textContent || '').toLowerCase().indexOf(q) === -1);
+        });
+
+        let visibleNotes = 0;
+        noteRows.forEach(function (row) {
+          const sec = row.getAttribute('data-sec');
+          const isOverride = row.getAttribute('data-override') === 'true';
+          const isNbGem = row.getAttribute('data-nbgem') === 'true';
+          const isNbComm = row.getAttribute('data-nbcomm') === 'true';
+          const isMulti = row.getAttribute('data-multi') === 'true';
+
+          let matchSec = true;
+          if (activeSecFilter === 'multi') {
+            matchSec = isMulti;
+          } else if (activeSecFilter === 'override') {
+            matchSec = isOverride;
+          } else if (activeSecFilter === 'nbgem') {
+            matchSec = isNbGem;
+          } else if (activeSecFilter === 'nbcomm') {
+            matchSec = isNbComm;
+          } else if (activeSecFilter !== 'all') {
+            matchSec = sec === activeSecFilter;
+          }
+
+          const matchQuery = !q || (row.textContent || '').toLowerCase().indexOf(q) !== -1;
+          const show = matchSec && matchQuery;
+          row.hidden = !show;
+          if (show) visibleNotes += 1;
+        });
+
+        overrideCount.textContent = 'Showing ' + visibleNotes + ' of ' + noteRows.length + ' notes';
+      }
+
+      secBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          secBtns.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          activeSecFilter = btn.getAttribute('data-sec') || 'all';
+          filterAll();
+        });
+      });
+
+      globalSearch.addEventListener('input', filterAll);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === '/' && document.activeElement !== globalSearch) {
+          e.preventDefault();
+          globalSearch.focus();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

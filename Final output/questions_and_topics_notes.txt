@@ -1,0 +1,113 @@
+Q260: log_time_series_metrics function better suited to log loss values log_metrics function to log summaries assign_input_artifact method to track pre processed data 
+OPTION C IS CORRECT
+
+Q263: use bigquery to scale numerical features and let tensor flow do 1 hot encoding. 
+One hot encoding to not be done in bigquery because it creates a new col with every input value. This can increase dataset size, drive up storage cost and makes exporting data expensive and slow. 
+OPTION B is best 
+
+Q264: random forest is better for tabular data and create better explanations with features on which feature and the driving factor using built in feature importance score 
+OPTION D for 264
+Churn prediction is always a binary prediction AND hence it is a classification model rather than a regression model 
+
+Q265: OPTION A is correct. Create 2 entities and label it and then extract. 
+
+Q277: if it wasn’t for a bank which has more security requirements, it is better to go with private endpoints or else option d would be easier if questions was easy and quick 
+
+Q286: correct answer is B. Use cloud vision API as it needs no model training and can be used to annotate objects. Train automl model for customizations. Cloud vision api will be suitable only if objects fall under general detection capabilities. 
+
+Q289: USE TRANSFORM CLAUSE so that feature pre processing is added directly to the model 
+
+Q290: run 1 hypertuning job for 100 trials where both learning rate and no of hidden layers are conditional. if either of them eg learning rate as non conditional then only learning rate is only for dnn and would use linear regression which will reduce efficiency 
+
+Q291: feature attribution drift with 0.1 sampling rate. This allows to monitor changes in feature interaction and keep expense down. The expense is lower because sampling rate is 0.1 and it analyses only 10% of the data which lowers the cost of the monitoring job. Statistical sampling is effective for drift detection and can identify significant changes and distributions and it is okay. Used to balance accuracy and efficiency. 
+
+Feature drift is when statistical distribution of input features change over time. For eg if average age changes it means that there is a feature drift 
+Feature attribution drift occurs when importance of a feature in making predictions changes
+Feature interaction changes is related to the importance of features changing and hence it is related to attribution drift 
+
+
+Q293: linear regression vs other models for predicting product sales 
+Boosted tree is excel at capturing complex non linear patterns or non related features without requiring extensive manual feature engineering like one hot encoding 
+
+Q295: gemini is confused within itself and has strong opinions between linear regression and boosted tree model and hence can’t arrive at a conclusion. I will go with answer A i.e. linear regression 
+
+Q299: AutoSxS is used to compare 2 models side by side and by using LLM as a Judge which auto sxs provides. If customizations are needed and to add domain specific metrics then go with custom python component. using a custom python component / custom vertex ai pipelines component to be used only for ML models 
+
+
+Q301: To minimize operational overhead and minimal operational overhead, use the Vertex Explainable AI. The AutoML Tables is deprecated now. 
+Shapely values come from game theory and help to understand the contribution of each feature to final prediction. Sample shapely is approximation method to use random sampling to get predictions more quickly 
+Integrated gradient is an interpretability technique for deep learning models. Way to figure out which part of image or input data is more important. It is for deep learning models. If feature change happens to model output then which feature has more impact on the model output 
+
+
+Q303 : VertexAI Agent Builder built specifically for semantic search and with minimal effort to integrate movie metadata without complexity of building vector search backend. 
+
+Q305 : Use VertexAIPipelines and SDK to use in cases where model artifacts tracking and lineage tracker is needed .
+This ensures tightest integration and best long term support. 
+
+VertexAI Experiement: feature designed to compare and track different runs of ML models across diff parameters, artifacts, hyper parameters and compare it with results for dev integration 
+Vertex ML Metadata is a service that records and stores lineage, properties and artifacts and allows to track entire history of asset and ensure reproducibility  
+Ml metadtaa is prone to error as we need to manually write code to track every step. 
+Whereas using pipelines and sdk, the tracking of lineage is handled automatically and no need to write custom code and can be scaled and maintained for future projects 
+Vertex AI Managed Datasets are datasets created and registered in vertex service. Manage means integration with training and deployment tools and associated with ML metadata. Way to store training and evaluation data. Integrates with model training and data labeling etc. ensures reproducibility. 
+Integration with ml metadata. Ml metadata integrates automatically and logs usage as input in the lineage graph and stores all details and logs in vertex ai managed dataset. 
+
+Q307: Use the cloud vision api that has automatic features and will not need to retrain using automl. For now, training on automl is best. It saves from complex and time consuming process to build model from scratch. It tunes feature engineering and hyper parameter tuning etc
+
+Q311: Right answer is collar enterprise i.e. option C for sure 
+Vertex AI Workbench is an integrated dev env built on google cloud for having a single interface for ml designed to support e2e ml workflows for building training and deploying models. Code development takes place. Need to define machine type, libraries etc . Not designed for real time collaboration. 
+Vertex AI is overarching platform on google cloud for ML and GenAI
+Vertex AI pipeline is a specific serverless services to automate and orchestrate ml workflows ensuring steps are reproducible and lineage is managed automatically  
+
+Colab Enterprise brings google collab interface on cloud and allows teams to work on notebooks in real time across users. It also allows attaching gpu’s easily. 
+Designed for teams that need real time collab like Jupyter. Integration with google cloud and compute resources 
+
+Q313 for fastest and most robust option to use dataproc cluster + Jupyter. 
+
+Q318: last option to use google cloud console view instead of tensor flow data validation which is custom option and hence option d is best. It saves time and seamless integration 
+
+Q319: to get full control, using a custom yaml file is the preferred approach. It gives specific control on configuring infra, gke etc to manage and modify the infrastructure components properly. Option D is better from a more granular approach. Using model garden, you cannot fine grain it. 
+
+Q320 Vertex AI Tensorboard is a managed service to track, visualize and compare model training in real time. Makes easier to debug your model and changes in configuration affect performance. It can display images or texts generated during training process in addition to visualizing graphs of execution and tracking training metrics 
+
+Q327 fine tune llama 3 model from model garden using vertex ai pipelines. Allows to train model on custom dataset. 
+Why not to use prompt engineering: useful but limited by the context window size. If context window is okay then it can be used but fine tuning is better much more effective. 
+BERT is only for text understand and analysis like classification rather than creating or generating text 
+Gemini 1.5 flash can’t be used as it doesn’t have the authors writing style and custom vm + gemini live can’t be used 
+
+Cloud Vision API provides pre trained models for image analysis -general purpose. Use when you need quick access to std features like detecting labels, text, identifying objects and detecting faces, facial expressions, identifying landmarks, product logos, analyzing image properties etc . 
+AutoML vision lets you train custom model on your own dataset. Use when vision api or pre trained models don’t cover. Object detection , facial detection , labels etc. use only when specific use case isn’t supported by pre trained models  
+DocAI service for extracting, classifying and understand data from docs. Use to extract data from docs , totals, names, structured information, contracts, id docs etc 
+
+Q325 best approach to gather user examples and do supervised fine tuning. OPTION B it is different that the most voted answer and I agree too 
+
+To measure AUC drop, feature attribution drift is to be monitored. 
+THEN
+Monitor the training / serving skew. If there is a significatn difference between model on which data is trained vs the data it has in prod then it will have a drop in AUC. 
+
+Training/serving skew diff between data that model was trained on and the actual data. If that is significant, the model’s analysis will suffer. 
+
+Q330 - ANSWER IS D
+Why can’t we use ml metadata? Because it will contain lineage and history only. Managed datasets will store and manage the version directly and version of the data and this is for dataset versioning . 
+
+Q339: BQML allows you to import tensor flow model. Ans is D no need of conversion. Can be done using CREATE MODEL statement. 
+
+
+What is Agent Platform supervised fine-tuning (SFT) service with a dataset of valid MechScript examples. 
+Out of the box, foundational LLMs (like Gemini or PaLM) know popular languages like Python, Java, or SQL because they were trained on massive amounts of public code. However, they have zero knowledge of a company's private, internal language like "MechScript."
+Supervised Fine-Tuning (SFT) is the process of taking a pre-trained foundational model and training it further on a highly specific, curated dataset of prompt-response pairs. In this scenario, you would provide the model with hundreds or thousands of examples of user requests paired with the correct, valid MechScript code.
+
+When dealing with a completely unseen syntax, format, or domain-specific language (DSL), SFT is the most effective approach because:
+* It alters the model's behavior: Unlike providing documents for the model to read, SFT actually updates the model's weights slightly so it internalizes the vocabulary, grammar, and syntax rules of MechScript.
+* Overcomes Context Limits: You could try to put the rules of MechScript in the system prompt (Few-Shot Prompting), but complex language rules would quickly exhaust the context window and the model would likely still hallucinate syntax errors. SFT bakes the syntax into the model itself.
+
+
+Use the Agent Platform SDK to create a Ray on Agent Platform cluster. Update the script to use Ray Data libraries for distributed processing, and submit the job to the cluster.  => USE WHEN OOM or OUT OF MEMORY ISSUES OCCUR 
+Ray is a popular open-source framework used to scale Python and machine learning workloads from a single machine to a massive cluster of machines. Ray on Vertex AI is Google Cloud's fully managed service for this framework. Instead of manually provisioning Compute Engine VMs, installing Ray, and networking them together, you use the Vertex AI SDK to spin up a fully configured Ray cluster instantly.
+
+Standard Python libraries like pandas are designed to run on a single machine's CPU and memory. Even if you spin up a 10-node cluster, a standard pandas script won't know how to use the other 9 nodes.
+Ray Data is a distributed data processing library native to Ray. By updating your script to use Ray Data, you tell the framework how to split the massive dataset into smaller chunks (partitions) and process them in parallel across all the nodes in the cluster.
+
+
+
+Q351: why not use prompt engineering? Same reason as before because prompt engineering is too inefficient to have large context of author styles etc and fine tuning is better option to be done here 
+
